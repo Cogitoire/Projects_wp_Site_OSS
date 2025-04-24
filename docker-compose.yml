@@ -1,0 +1,64 @@
+version: '3.8' # docker-compose.yml の書式バージョン
+
+services: # ここから下に起動するサービス（コンテナ）を定義します
+  db: # サービス名（任意ですが分かりやすく 'db' とします）
+    image: mysql:8.0 # 使用するMySQLのDockerイメージを指定 (8.0の部分は変えられます)
+    container_name: mywp_db # コンテナの名前（任意）
+    command: --default-authentication-plugin=mysql_native_password # MySQL 8.0 以上でWordPressと接続するための設定
+    volumes: # データの永続化設定
+      - db_data:/var/lib/mysql # コンテナが消えてもDBデータが消えないように名前付きボリュームに保存
+    restart: always # Docker起動時に常にコンテナも起動するようにする
+    environment: # 環境変数（MySQLの設定）
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD} # MySQLのrootユーザーのパスワード（必ず変更してください）
+      MYSQL_DATABASE: ${MYSQL_DATABASE} # WordPressが使用するデータベース名（任意）
+      MYSQL_USER: ${MYSQL_USER} # WordPressが接続するためのユーザー名（任意）
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD} # WordPress用ユーザーのパスワード（必ず変更してください）
+    networks: # ネットワーク設定（後述）
+      - wp_network
+
+  wordpress: # サービス名（'wordpress' とします）
+    image: wordpress:latest # 使用するWordPressのDockerイメージを指定（最新版）
+                           # 特定のPHPバージョンを使いたい場合 'wordpress:php8.1-apache' のように指定可能
+    container_name: mywp_app # コンテナの名前（任意）
+    depends_on: # 依存関係：'db' サービスが起動してから こちらを起動する
+      - db
+    volumes: # ローカルPCのファイルとコンテナ内を同期させる設定
+      # この設定でローカルの ./wp-content をコンテナ内の /var/www/html/wp-content と同期
+      # ローカルでテーマやプラグインを編集すると、即座にコンテナに反映される！
+      - ./wp-content:/var/www/html/wp-content
+      # 他にも同期したいフォルダがあればここに追加（例: .htaccessなど）
+      # - ./config/php.ini:/usr/local/etc/php/conf.d/uploads.ini # PHP設定を上書きしたい場合など
+    ports: # ポートフォワーディング設定 [ローカルPCのポート]:[コンテナ内のポート]
+      - "8080:80" # ローカルPCのブラウザで http://localhost:8080 でアクセスできるようにする
+                    # ローカルの8080番が使用中なら 8000 など空いている番号に変更可能
+    restart: always
+    environment: # 環境変数（WordPressの設定）
+      WORDPRESS_DB_HOST: ${WORDPRESS_DB_HOST} # 接続するDBホスト名（サービス名'db'を指定）とポート
+      WORDPRESS_DB_USER: ${WORDPRESS_DB_USER} # 上記dbサービスで設定したユーザー名
+      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD} # 上記dbサービスで設定したパスワード
+      WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME} # 上記dbサービスで設定したデータベース名
+      WORDPRESS_DEBUG: 1
+    networks:
+      - wp_network
+
+  # phpmyadmin: # (任意) データベース管理ツール phpMyAdmin を使いたい場合
+  #   image: phpmyadmin/phpmyadmin:latest
+  #   container_name: mywp_pma
+  #   depends_on:
+  #     - db
+  #   ports:
+  #     - "8081:80" # ローカルPCのブラウザで http://localhost:8081 でアクセスできるようにする
+  #   environment:
+  #     PMA_HOST: db # 接続するDBホスト名（サービス名'db'を指定）
+  #     PMA_PORT: 3306
+  #     # UPLOAD_LIMIT: 1G # インポートファイルサイズ上限を上げたい場合など
+  #   restart: always
+  #   networks:
+  #     - wp_network
+
+volumes: # 上記 volumes: で指定した名前付きボリュームの定義
+  db_data: # この名前は任意ですが、dbサービスのvolumesと合わせる
+
+networks: # コンテナ間の通信を可能にするためのネットワーク定義
+  wp_network: # この名前は任意ですが、各サービスのnetworksと合わせる
+    driver: bridge # Dockerのデフォルトネットワークドライバ

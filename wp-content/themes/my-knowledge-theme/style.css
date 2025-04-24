@@ -1,0 +1,404 @@
+/*
+Theme Name: Cogitoire Knowledge Theme (あなたのテーマ名)
+Author: こじとわーる
+Description: 備忘録・ブログ・記録・図鑑のためのカスタムテーマです。(テーマの説明)
+Version: 1.0
+Requires at least: 6.0 (対応するWordPressの最低バージョン)
+Tested up to: 6.5 (テストしたWordPressのバージョン)
+Requires PHP: 7.4 (対応するPHPの最低バージョン)
+License: GNU General Public License v2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: my-knowledge-theme (翻訳用。テーマフォルダ名と合わせるのが一般的)
+Tags: custom-background, custom-logo, custom-menu, featured-images, blog, portfolio (テーマの特徴を表すタグ。任意)
+*/
+
+/* ここから下にCSSルールを書いていきます (今は空でもOK) */
+body {
+    background-color: #CCCCCC; /* 例として背景色だけ指定 */
+}   
+/*--------------------------------------------------------------
+# 基本設定 & Single Knowledge Card Styles
+--------------------------------------------------------------*/
+
+/* 全体の基本設定 */
+body {
+    background-color: #EEE; /* ★ 背景色を白に */
+    /* ★ フォント指定: 游ゴシック優先、なければメイリオ、それもなければ標準ゴシック ★ */
+    font-family: "游ゴシック体", YuGothic, "游ゴシック", "Yu Gothic", "メイリオ", Meiryo, sans-serif; 
+    color: #333; /* ★ 基本の文字色をソフトな黒に */
+    line-height: 1.7; /* 行間を少し広めに (読みやすさUP) */
+}
+
+/* 記事・カード全体の基本スタイル調整 */
+.knowledge-card-single, 
+.post-single { /* ブログ記事にも適用 */
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee; /* 記事下の区切り線 */
+}
+
+/* --- 知識カード詳細 (`single-knowledge_card.php`) --- */
+
+/* 2カラムコンテナ */
+.knowledge-card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px; 
+    margin-top: 20px;
+}
+
+/* 左カラム (メインコンテンツ) */
+.knowledge-card-main-content {
+    flex: 2; 
+    min-width: 300px;
+}
+
+/* 右カラム (サイドバー / 画像) */
+.knowledge-card-sidebar {
+    flex: 1; 
+    min-width: 200px;
+}
+
+/* 画像のスタイル */
+.knowledge-card-sidebar .post-thumbnail img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #ddd; 
+    padding: 4px;
+    background-color: #fff;
+}
+
+/* 知識カード: タイトル */
+.knowledge-card-single .entry-title {
+    font-size: 28px;
+    margin-top: 0;
+    margin-bottom: 5px;
+    font-weight: 600; /* 少し太め */
+    color: #222; /* やや濃いめの文字色 */
+}
+
+/* 知識カード: 分野 */
+.knowledge-card-main-content .entry-meta .field-links {
+    display: inline-block; 
+    font-size: 16px; /* タイトルより少し小さく */
+    font-weight: 600; /* 少し太め */
+    color: #444; /* やや目立つ灰色 */
+    margin-bottom: 15px;
+    background-color: #f5f5f5; /* ★ 控えめな背景色を追加 */
+    padding: 3px 10px; /* ★ 少しパディング */
+    border-radius: 3px; /* ★ 角を少し丸める */
+}
+.knowledge-card-main-content .entry-meta .field-links a {
+    color: inherit; 
+    text-decoration: none; 
+}
+.knowledge-card-main-content .entry-meta .field-links a:hover {
+    text-decoration: underline; 
+}
+
+/* 分類リンクのスタイル (分野リンクに似せるか、少し変えるか) */
+.knowledge-card-main-content .entry-meta .classification-links {
+    display: inline-block; 
+    font-size: 16px; /* タイトルより少し小さく */
+    font-weight: 600; /* 少し太め */
+    color: #444; /* やや目立つ灰色 */
+    margin-bottom: 15px;
+    background-color: #f5f5f5; /* ★ 控えめな背景色を追加 */
+    padding: 3px 10px; /* ★ 少しパディング */
+    border-radius: 3px; /* ★ 角を少し丸める */
+    
+}
+.knowledge-card-main-content .entry-meta .classification-links a {
+    color: inherit; 
+    text-decoration: none; 
+}
+.knowledge-card-main-content .entry-meta .classification-links a:hover {
+    text-decoration: underline; 
+}
+
+/* 区切り文字のスタイル */
+.knowledge-card-main-content .entry-meta .meta-separator {
+    margin: 0 8px; /* 区切り文字の左右にスペース */
+    color: #bbb; /* 区切り文字の色を薄く */
+    font-weight: normal;
+}
+
+
+/* 知識カード: 本文 */
+.knowledge-card-main-content .entry-content {
+    margin-top: 20px; /* 分野との間隔を少し広げる */
+    font-size: 16px; /* 基本の文字サイズ */
+}
+.knowledge-card-main-content .entry-content p {
+    margin-bottom: 1em; 
+}
+.knowledge-card-main-content .entry-content a {
+    color: #005f99; /* ★ 落ち着いた青系のリンク色 */
+    text-decoration: underline;
+}
+.knowledge-card-main-content .entry-content a:hover {
+    color: #003f66; 
+}
+
+/* 知識カード: タグ */
+.knowledge-card-main-content .entry-footer .knowledge-tag-links {
+    display: block; 
+    margin-top: 25px; 
+    font-size: 14px; 
+    color: #555;
+}
+.knowledge-card-main-content .entry-footer .knowledge-tag-links a {
+    color: #005f99; /* ★ リンク色を統一 */
+    text-decoration: none;
+    margin-right: 8px; 
+    line-height: 1.8; /* タグが多い場合に備えて行間調整 */
+}
+.knowledge-card-main-content .entry-footer .knowledge-tag-links a:hover {
+    text-decoration: underline;
+}
+
+/* --- ブログ記事詳細 (`single.php`) にも基本スタイルを --- */
+.post-single .entry-title {
+     font-size: 28px;
+    margin-top: 0;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #222;
+}
+.post-single .entry-meta {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 20px;
+}
+.post-single .entry-content {
+     font-size: 16px;
+}
+.post-single .entry-content a {
+     color: #005f99;
+    text-decoration: underline;
+}
+.post-single .entry-content a:hover {
+    color: #003f66; 
+}
+.post-single .post-thumbnail img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+}
+
+/* 全体の幅を制限する場合 (必要ならコメントアウトを外す) */
+
+.content-area {
+    max-width: 960px; 
+    margin: 0 auto; 
+    padding: 20px;
+} 
+
+/*--------------------------------------------------------------
+# Responsive Styles
+--------------------------------------------------------------*/
+@media (max-width: 767px) { /* 767px以下の画面幅に適用 (タブレット縦向き程度) */
+
+    .knowledge-card-container {
+        flex-direction: column; /* Flexboxの子要素を縦並びにする */
+    }
+
+    /* カラムの幅指定をリセットする場合 (必要に応じて) */
+    .knowledge-card-main-content,
+    .knowledge-card-sidebar {
+        flex-basis: 100%; /* 基本幅を100%に */
+        min-width: 0; /* 最小幅指定を解除 */
+    }
+
+    .knowledge-card-sidebar {
+       margin-top: 20px; /* 画像の上に少しマージンを追加 */
+    }
+}
+/*--------------------------------------------------------------
+# Archive Styles (taxonomy-field.php etc.)
+--------------------------------------------------------------*/
+.page-header { /* アーカイブタイトル部分 */
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.page-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #222;
+}
+
+.archive-description {
+    font-size: 15px;
+    color: #555;
+    margin-top: 5px;
+}
+
+.knowledge-card-summary { /* 一覧の各カード */
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.knowledge-card-summary .entry-title {
+     font-size: 22px; /* 少し小さめ */
+     margin-bottom: 5px;
+}
+ .knowledge-card-summary .entry-title a {
+     color: #222;
+     text-decoration: none;
+ }
+  .knowledge-card-summary .entry-title a:hover {
+     color: #005f99;
+     text-decoration: underline;
+ }
+
+.knowledge-card-summary .post-thumbnail {
+    margin-bottom: 10px;
+}
+ .knowledge-card-summary .post-thumbnail img {
+    display: block;
+    max-width: 100%; /* 画像が大きい場合に備える */
+    height: auto;
+    border: 1px solid #ddd;
+    padding: 2px;
+    background-color: #fff;
+}
+
+
+.knowledge-card-summary .entry-summary { /* 抜粋 */
+    font-size: 15px;
+    color: #444;
+    line-height: 1.7;
+    margin-top: 10px;
+}
+.knowledge-card-summary .entry-summary .read-more { /* 続きを読むリンク */
+    display: inline-block; /* 見た目調整用 */
+    margin-left: 5px;
+    font-weight: bold;
+    color: #005f99;
+    text-decoration: underline;
+}
+ .knowledge-card-summary .entry-summary .read-more:hover {
+    color: #003f66;
+ }
+
+.knowledge-card-summary .entry-footer {
+     margin-top: 15px;
+}
+ .knowledge-card-summary .entry-footer .field-links,
+ .knowledge-card-summary .entry-footer .knowledge-tag-links {
+    font-size: 13px;
+    color: #666;
+}
+ .knowledge-card-summary .entry-footer a {
+    color: #005f99;
+    text-decoration: none;
+}
+ .knowledge-card-summary .entry-footer a:hover {
+     text-decoration: underline;
+}
+
+/* ページネーション */
+.pagination {
+    margin-top: 40px;
+    text-align: center; /* 中央揃え */
+}
+.pagination .nav-links {
+    display: inline-block; /* 中央揃えのため */
+}
+.pagination .page-numbers {
+    display: inline-block;
+    padding: 5px 12px;
+    margin: 0 2px;
+    border: 1px solid #ddd;
+    color: #005f99;
+    text-decoration: none;
+    border-radius: 3px;
+}
+.pagination .page-numbers.current,
+.pagination .page-numbers:hover {
+    background-color: #005f99;
+    color: #fff;
+    border-color: #005f99;
+}
+
+/*--------------------------------------------------------------
+# Navigation Menu Styles
+--------------------------------------------------------------*/
+.main-navigation { /* nav タグ全体 */
+    margin-top: 10px; /* ヘッダーの他の要素との間に少し余白 */
+}
+
+.main-navigation ul { /* メニュー項目のリスト (ul) */
+    list-style: none; /* リストの黒点を消す */
+    margin: 0;
+    padding: 0;
+    display: flex; /* ★項目を横並びにする */
+    flex-wrap: wrap; /* 画面幅が狭い場合に折り返す */
+}
+
+.main-navigation li { /* 各メニュー項目 (li) */
+    margin-right: 20px; /* 項目間の右側の余白 */
+}
+.main-navigation li:last-child {
+    margin-right: 0; /* 最後の項目の右余白は不要 */
+}
+
+.main-navigation a { /* メニューのリンク (a) */
+    display: block; /* クリック範囲を広げる */
+    padding: 8px 0; /* 上下のパディング */
+    text-decoration: none; /* 下線を消す */
+    color: #005f99; /* 以前設定したリンク色 */
+    font-weight: bold;
+    border-bottom: 2px solid transparent; /* ホバー用の下準備 */
+    transition: border-bottom 0.2s; /* ホバー効果を滑らかに */
+}
+
+.main-navigation a:hover,
+.main-navigation .current-menu-item > a { /* ホバー時と現在のページ */
+    color: #222; /* 文字色を変える */
+    border-bottom-color: #222; /* 下線を表示 */
+}
+
+/* メニューが設定されなかった場合のフォールバックを非表示に */
+.menu-fallback { display: none; }
+nav:empty { display: none; }
+/*--------------------------------------------------------------
+# Index / Blog Archive Styles
+--------------------------------------------------------------*/
+.post-summary.index-item { /* Target items specifically on index */
+    margin-bottom: 40px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid #eee;
+}
+.post-summary.index-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.post-summary.index-item .entry-title {
+     font-size: 22px; 
+     margin-top: 0; 
+     margin-bottom: 8px;
+}
+ .post-summary.index-item .entry-title a {
+     color: #222;
+     text-decoration: none;
+ }
+  .post-summary.index-item .entry-title a:hover {
+     color: #005f99;
+     text-decoration: underline;
+ }
+
+.post-summary.index-item .entry-summary { 
+    font-size: 15px;
+    color: #444;
+    line-height: 1.7;
+    margin-top: 10px;
+}
+/* Add styles for read-more if implemented later */
