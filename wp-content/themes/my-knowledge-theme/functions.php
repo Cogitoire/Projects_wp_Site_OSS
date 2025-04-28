@@ -34,10 +34,29 @@ function my_theme_enqueue_styles() {
     // 例: wp_enqueue_style('my-google-fonts', 'https://fonts.googleapis.com/css?...');
 
     // JavaScriptファイルを読み込みたい場合は wp_enqueue_script() を使う (後述)
+}
+function my_knowledge_theme_scripts() {
+        // 既存の wp_enqueue_style などがあれば、それはそのまま残してください
+    
+        // 作成した random-background.js を読み込む
+        wp_enqueue_script(
+            'my-knowledge-theme-random-background', // スクリプトのハンドル名 (ユニークな名前)
+            get_template_directory_uri() . '/js/random-background.js', // ファイルのパス
+            array(), // 依存する他のスクリプト (今回はなし)
+            '1.0',   // バージョン番号
+            true     // true にすると </body> の直前で読み込まれる (推奨)
+        );
 
 }
 // 'wp_enqueue_scripts' アクションフックに、上で定義した関数を紐付ける
 add_action( 'wp_enqueue_scripts', 'my_theme_enqueue_styles' );
+add_action( 'wp_enqueue_scripts', 'my_knowledge_theme_scripts' );
+
+
+
+// ここから下に、他の関数や設定を追加していく
+
+// ... (カスタム投稿タイプなどのコードはそのまま) ...
 
 
 // ここから下に、他の関数や設定を追加していく
@@ -212,3 +231,29 @@ function my_custom_archive_title( $title ) {
     return $title;
 }
 add_filter( 'get_the_archive_title', 'my_custom_archive_title' );
+
+/**
+ * 検索クエリを変更して、カスタム投稿タイプを含めたり、対象を絞り込んだりする
+ */
+function my_knowledge_theme_search_filter( $query ) {
+    // 管理画面の検索やメインクエリでない場合は何もしない
+    if ( is_admin() || ! $query->is_main_query() ) {
+        return;
+    }
+
+    // 検索ページのクエリの場合
+    if ( $query->is_search() ) {
+        // ラジオボタンの値を取得 (なければ 'all' とする)
+        $search_target = isset( $_GET['search_target'] ) ? sanitize_text_field( $_GET['search_target'] ) : 'all';
+
+        if ( $search_target === 'knowledge_only' ) {
+            // 「知識カードのみ」が選択された場合、投稿タイプを 'knowledge_card' に限定
+            $query->set( 'post_type', 'knowledge_card' );
+        } else {
+            // 「すべて」が選択された場合 (または指定がない場合)
+            // 検索対象に 'post' (投稿), 'page' (固定ページ), 'knowledge_card' (知識カード) を含める
+            $query->set( 'post_type', array( 'post', 'page', 'knowledge_card' ) );
+        }
+    }
+}
+add_action( 'pre_get_posts', 'my_knowledge_theme_search_filter' );

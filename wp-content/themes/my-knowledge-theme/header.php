@@ -20,7 +20,14 @@
                 'depth'          => 1,              // 表示する階層（1ならサブメニューは表示しない）
             ) );
             ?>
-        </nav>
+    </nav> <?php // main-navigation の閉じタグ ?>
+
+<?php // ↓↓↓ 検索フォームを表示 ↓↓↓ ?>
+<div class="header-search">
+    <?php get_search_form(); // これが searchform.php を読み込む ?>
+</div>
+<?php // ↑↑↑ 検索フォームここまで ↑↑↑ ?>
+        
 </header>
 
-<main class="site-content"> <?php // メインコンテンツ部分を囲む開始タグ (任意) ?>
+ <?php // メインコンテンツ部分を囲む開始タグ (任意) ?>

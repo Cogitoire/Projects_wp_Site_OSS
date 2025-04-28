@@ -17,11 +17,10 @@
                             <span>投稿日: <?php the_date(); ?></span> | 
                             <span>作成者: <?php the_author(); ?></span> 
                             <?php 
-                            /* // カテゴリーやタグも表示する場合の例（必要ならコメントアウトを外す）
+                            // カテゴリーやタグも表示する場合の例
                             echo ' | カテゴリー: ';
                             the_category(', '); 
                             the_tags(' | タグ: ', ', ');
-                            */
                             ?>
                         </div></header><?php if ( has_post_thumbnail() ) : // アイキャッチ画像 ?>
                         <div class="post-thumbnail">
@@ -43,5 +42,8 @@
             endwhile; // ループ終了
         endif; 
         ?>
+        
+    </main><!-- .site-main -->
+</div><!-- .content-area -->
 
-    </main></div><?php get_footer(); // footer.php を読み込む ?>
+<?php get_footer(); // footer.php を読み込む ?>

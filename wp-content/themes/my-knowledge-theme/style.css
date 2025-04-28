@@ -12,9 +12,10 @@ Text Domain: my-knowledge-theme (翻訳用。テーマフォルダ名と合わ�
 Tags: custom-background, custom-logo, custom-menu, featured-images, blog, portfolio (テーマの特徴を表すタグ。任意)
 */
 
+
 /* ここから下にCSSルールを書いていきます (今は空でもOK) */
 body {
-    background-color: #CCCCCC; /* 例として背景色だけ指定 */
+    background-color: #ccc; /* 例として背景色だけ指定 */
 }   
 /*--------------------------------------------------------------
 # 基本設定 & Single Knowledge Card Styles
@@ -22,7 +23,7 @@ body {
 
 /* 全体の基本設定 */
 body {
-    background-color: #EEE; /* ★ 背景色を白に */
+    background-color: #e5e5e5; /* ★ 背景色を白に */
     /* ★ フォント指定: 游ゴシック優先、なければメイリオ、それもなければ標準ゴシック ★ */
     font-family: "游ゴシック体", YuGothic, "游ゴシック", "Yu Gothic", "メイリオ", Meiryo, sans-serif; 
     color: #333; /* ★ 基本の文字色をソフトな黒に */
@@ -36,6 +37,7 @@ body {
     padding-bottom: 20px;
     border-bottom: 1px solid #eee; /* 記事下の区切り線 */
 }
+
 
 /* --- 知識カード詳細 (`single-knowledge_card.php`) --- */
 
@@ -141,6 +143,7 @@ body {
     color: #003f66; 
 }
 
+
 /* 知識カード: タグ */
 .knowledge-card-main-content .entry-footer .knowledge-tag-links {
     display: block; 
@@ -159,6 +162,8 @@ body {
 }
 
 /* --- ブログ記事詳細 (`single.php`) にも基本スタイルを --- */
+
+
 .post-single .entry-title {
      font-size: 28px;
     margin-top: 0;
@@ -188,13 +193,59 @@ body {
     margin-bottom: 20px;
 }
 
+
+
+ /* 個別記事のタイトル */
+
+.post-summary.index-item {
+    border: 1px solid #BBBBBB; /* 枠線 */
+    padding: 20px;          /* 内側の余白 */
+    margin-bottom: 2em;     /* 次のカードとの間隔 */
+    background-color: #DEDEDE; /* 背景色を白に */
+    border-radius: 10px; /* 角を少し丸める (任意) */
+}
+
+.post-summary.index-item .entry-title {
+     font-size: 22px; 
+     margin-top: 0; 
+     margin-bottom: 8px;
+}
+.post-summary.index-item .entry-summary { 
+    font-size: 15px;
+    color: #444;
+    line-height: 1.7;
+    margin-top: 10px;
+}
+
+.post-summary.index-item .entry-title a {
+    font-size: 1.5em; /* 文字サイズを大きく（例: 通常の2倍） */
+    margin-top: 1.5em; /* 上の余白 */
+    margin-bottom: 0.5em; /* 下の余白 */
+    line-height: 1.3; /* 行の高さを調整 */
+    color: #222;
+    text-decoration: none;
+}
+
+ .post-summary.index-item .entry-title a:hover {
+    text-decoration: underline; /* ホバーしたら下線を表示 */
+    color: #0073aa; /* ホバー時の色（WordPressの標準ブルー） */
+}
+
+/* Add styles for read-more if implemented later */
+
 /* 全体の幅を制限する場合 (必要ならコメントアウトを外す) */
 
 .content-area {
-    max-width: 960px; 
-    margin: 0 auto; 
-    padding: 20px;
-} 
+    max-width: 800px; /* 例えば最大幅を800pxに設定 */
+    margin-left: auto;  /* 左の余白を自動調整 */
+    margin-right: auto; /* 右の余白を自動調整 */
+    padding: 20px;      /* 内側の余白（コンテンツと枠線の間） */
+    background-color: #f0f0f0; /* ★★★ この行を追加: コンテンツエリアの背景を白にする ★★★ */
+    /* ↓↓ オプション: コンテンツエリアをカードのように見せたい場合 ↓↓ */
+    border-radius: 10px; /* 角を少し丸める (任意) */
+    
+}
+
 
 /*--------------------------------------------------------------
 # Responsive Styles
@@ -367,38 +418,162 @@ body {
 /* メニューが設定されなかった場合のフォールバックを非表示に */
 .menu-fallback { display: none; }
 nav:empty { display: none; }
-/*--------------------------------------------------------------
-# Index / Blog Archive Styles
+
+/* 投稿メタ情報 */
+
+.entry-meta {
+    font-size: 0.9em; /* 少し文字サイズを小さく */
+    color: #666;     /* 少し薄いグレーに */
+    margin-bottom: 1.5em; /* メタ情報の下に余白 */
+}
+.entry-meta span { /* 日付や作成者の間の区切り */
+    margin-right: 5px;
+    margin-left: 5px;
+}
+.entry-meta span:first-child { /* 最初の要素の左の余白は不要 */
+     margin-left: 0;
+}
+
+/* 本文の読みやすさ  */
+.entry-content,
+.entry-summary {
+    font-size: 16px; /* 基本の文字サイズ (調整可能) */
+    line-height: 1.8; /* 行の高さを文字サイズの1.8倍に（読みやすいとされる値） */
+    color: #333;     /* 本文の色（真っ黒より少し柔らかく） */
+}
+.entry-content p,
+.entry-summary p {
+    margin-bottom: 1.5em; /* 段落の下に余白 */
+}
+
+ /*--------------------------------------------------------------
+# Related Knowledge Cards Styles
 --------------------------------------------------------------*/
-.post-summary.index-item { /* Target items specifically on index */
-    margin-bottom: 40px;
-    padding-bottom: 40px;
-    border-bottom: 1px solid #eee;
-}
-.post-summary.index-item:last-child {
-    margin-bottom: 0;
-    padding-bottom: 0;
-    border-bottom: none;
+.related-knowledge-cards {
+    margin-top: 40px; /* 上のコンテンツとの間隔 */
+    padding-top: 20px; /* 上の区切り線との間隔 */
+    border-top: 1px solid #eee; /* 上に区切り線 */
+    clear: both; /* 回り込み解除 (念のため) */
 }
 
-.post-summary.index-item .entry-title {
-     font-size: 22px; 
-     margin-top: 0; 
-     margin-bottom: 8px;
+.related-knowledge-cards .related-title {
+    font-size: 20px; /* 見出しのサイズ */
+    margin-bottom: 15px; /* リストとの間隔 */
+    font-weight: 600;
+    color: #333;
 }
- .post-summary.index-item .entry-title a {
-     color: #222;
-     text-decoration: none;
- }
-  .post-summary.index-item .entry-title a:hover {
-     color: #005f99;
-     text-decoration: underline;
- }
 
-.post-summary.index-item .entry-summary { 
-    font-size: 15px;
-    color: #444;
-    line-height: 1.7;
-    margin-top: 10px;
+.related-knowledge-cards ul {
+    list-style: disc; /* リストマーカーを表示 (不要なら none) */
+    margin: 0 0 0 20px; /* 左側にインデント */
+    padding: 0;
 }
-/* Add styles for read-more if implemented later */
+
+.related-knowledge-cards li {
+    margin-bottom: 8px; /* 各項目の間隔 */
+}
+
+.related-knowledge-cards a {
+    color: #005f99; /* リンク色 (テーマに合わせて調整) */
+    text-decoration: none;
+}
+
+.related-knowledge-cards a:hover {
+    text-decoration: underline;
+}
+/* Related Knowledge Cards - Common Tags */
+.related-knowledge-cards .common-tags {
+    font-size: 0.85em; /* 少し小さめに */
+    color: #666;      /* 少し薄い色に */
+    margin-left: 5px; /* 記事タイトルとの間に少しスペース */
+    display: inline-block; /* 念のためインラインブロック要素に */
+}
+
+/* 共通タグのリンクのスタイル */
+.related-knowledge-cards .common-tags a {
+    color: #777; /* 共通タグのリンク色 (目立ちすぎないように) */
+    text-decoration: none;
+    border-bottom: 1px dotted #aaa; /* 下点線などでリンクとわかるように */
+    margin: 0 2px; /* タグ間の左右に少し余白 */
+}
+
+.related-knowledge-cards .common-tags a:hover {
+    color: #333;
+    border-bottom-style: solid;
+}
+
+/*--------------------------------------------------------------
+# Search Form Styles (Header)
+--------------------------------------------------------------*/
+.header-search .search-form {
+    display: flex; /* 要素を横並びにする */
+    align-items: center; /* 要素を縦方向中央に揃える */
+    flex-wrap: wrap; /* 画面幅が狭い場合に折り返す */
+    gap: 10px; /* 各要素間の基本的な隙間 */
+}
+
+/* 検索キーワード入力欄 */
+.header-search .search-field {
+    padding: 8px 10px; /* 内側の余白 */
+    font-size: 14px;   /* 文字サイズ (基準とするサイズ) */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    /* 必要であれば幅を指定: width: 200px; */
+}
+
+/* ラジオボタン部分全体 */
+.header-search .search-target-options {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* 「検索対象:」とラジオボタン、ラジオボタン間の隙間 */
+}
+
+/* 「検索対象:」ラベル */
+.header-search .search-target-label {
+    font-size: 14px; /* ★検索ボックスと同じか、少し小さめ (例: 13px) に調整 */
+    color: #555;     /* 少し薄い色に */
+    white-space: nowrap; /* 折り返さないように */
+}
+
+/* ラジオボタンのラベル (「すべて」「知識カードのみ」) */
+.header-search .search-target-options label {
+    font-size: 14px; /* ★「検索対象:」ラベルと同じか、少し小さめに調整 */
+    margin: 0; /* 余計なマージンをリセット */
+    cursor: pointer;
+    display: inline-flex; /* ラジオボタンとテキストを揃える */
+    align-items: center;
+    white-space: nowrap; /* 折り返さないように */
+}
+.header-search .search-target-options input[type="radio"] {
+    margin-right: 3px; /* ラジオボタンとテキストの間の隙間 */
+}
+
+/* 検索実行ボタン */
+.header-search .search-submit {
+    padding: 8px 15px;
+    font-size: 14px;
+    background-color: #0073aa; /* WordPress標準ブルー */
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s; /* ホバー効果を滑らかに */
+}
+
+.header-search .search-submit:hover {
+    background-color: #005f99;
+}
+
+/* 画面幅が狭い場合の調整例 (任意) */
+@media (max-width: 767px) {
+    .header-search .search-form {
+        gap: 8px; /* 狭い画面では少し詰める */
+    }
+    .header-search .search-field {
+        flex-grow: 1; /* 検索ボックスを可能な限り伸ばす */
+        min-width: 150px; /* 最小幅 */
+    }
+    .header-search .search-target-options {
+        /* 必要ならここでさらに調整 */
+    }
+}
