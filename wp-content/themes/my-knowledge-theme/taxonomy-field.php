@@ -8,7 +8,7 @@
             the_archive_title( '<h1 class="page-title">', '</h1>' ); 
             the_archive_description( '<div class="archive-description">', '</div>' );
             ?>
-        </header><?php if ( have_posts() ) : // 表示すべき知識カードがあるかチェック ?>
+        </header><?php if ( have_posts() ) : // 表示すべきナレッジカードがあるかチェック ?>
 
             <div class="knowledge-card-archive"> <?php // 一覧全体を囲むラッパー（スタイリング用） ?>
             <?php
@@ -60,7 +60,7 @@
             ) );
 
         else : // 表示すべきカードが1件もなかった場合 ?>
-            <p>該当する知識カードが見つかりませんでした。</p>
+            <p>該当するナレッジカードが見つかりませんでした。</p>
         <?php endif; ?>
 
     </main></div><?php get_footer(); // footer.php を読み込む ?>

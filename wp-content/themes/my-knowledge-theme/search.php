@@ -13,7 +13,7 @@
             // 検索対象を表示 (任意)
             $search_target_display = isset( $_GET['search_target'] ) ? sanitize_text_field( $_GET['search_target'] ) : 'all';
             if ($search_target_display === 'knowledge_only') {
-                echo '<p class="search-target-info">' . esc_html__( '対象: 知識カードのみ', 'my-knowledge-theme' ) . '</p>';
+                echo '<p class="search-target-info">' . esc_html__( '対象: ナレッジカードのみ', 'my-knowledge-theme' ) . '</p>';
             } else {
                 echo '<p class="search-target-info">' . esc_html__( '対象: すべて', 'my-knowledge-theme' ) . '</p>';
             }

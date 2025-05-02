@@ -48,9 +48,9 @@
                                 </div><?php endif; ?>
 
                             <?php // 画像がない場合はこの aside は空になるが、レイアウトは維持される ?>
-                                <?php // ★★★ ここから関連知識カード表示コード ★★★ ?>
+                                <?php // ★★★ ここから関連ナレッジカード表示コード ★★★ ?>
                                 <?php
-                                // --- 関連知識カードの表示 ---
+                                // --- 関連ナレッジカードの表示 ---
 
                                 // 現在の投稿のIDを取得
                                 $current_post_id = get_the_ID();
@@ -81,13 +81,17 @@
                                     );
 
                                     // クエリを実行
+                                    var_dump($related_query);
+// または、デバッグログに出力する場合
+// error_log(print_r($args, true));
+
                                     $related_query = new WP_Query( $related_args );
 
                                     // 関連カードが見つかった場合
                                     if ( $related_query->have_posts() ) :
                                 ?>
                                         <div class="related-knowledge-cards"> <?php // CSS用のクラス ?>
-                                            <h3 class="related-title"><?php _e( '関連する知識カード', 'my-knowledge-theme' ); // 見出し ?></h3>
+                                            <h3 class="related-title"><?php _e( '関連するナレッジカード', 'my-knowledge-theme' ); // 見出し ?></h3>
                                             <ul>
                                                 <?php while ( $related_query->have_posts() ) : $related_query->the_post(); ?>
                                                     <li>
@@ -142,15 +146,15 @@
                                     wp_reset_postdata();
                                 } // endif $tags
 
-                                // --- 関連知識カードの表示 ここまで ---
+                                // --- 関連ナレッジカードの表示 ここまで ---
                                 ?>
-                                <?php // ★★★ ここまで関連知識カード表示コード ★★★ ?>
+                                <?php // ★★★ ここまで関連ナレッジカード表示コード ★★★ ?>
 
                         </aside></div></article><?php 
             endwhile; 
         else : 
         ?>
-            <p>該当する知識カードが見つかりませんでした。</p>
+            <p>該当するナレッジカードが見つかりませんでした。</p>
         <?php
         endif; 
         ?>

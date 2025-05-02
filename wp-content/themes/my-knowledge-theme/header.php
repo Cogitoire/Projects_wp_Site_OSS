@@ -31,14 +31,9 @@
 </header>
 
 <?php // ↓↓↓ パンくずリスト表示 ↓↓↓ ?>
-    <div class="breadcrumbs-container"> <?php // スタイル調整用のコンテナ ?>
-        <?php
-        if ( function_exists( 'my_knowledge_theme_breadcrumbs' ) ) {
-            my_knowledge_theme_breadcrumbs();
-        }
-        ?>
-    </div>
+<?php if ( function_exists( 'my_knowledge_theme_breadcrumbs' ) ) { my_knowledge_theme_breadcrumbs(); } ?>
+ 
     <?php // ↑↑↑ パンくずリストここまで ↑↑↑ ?>
 
- <?php // メインコンテンツ部分を囲む開始タグ (任意) ?>
- <?php // 例: <div id="content" class="site-content"> ?>
+ <?php // ↓↓↓ メインコンテンツ部分を囲む開始タグ ↓↓↓ ?>
+ <div id="content" class="site-content">

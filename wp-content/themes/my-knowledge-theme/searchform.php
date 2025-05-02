@@ -13,7 +13,7 @@
         </label>
         <label>
             <input type="radio" name="search_target" value="knowledge_only" <?php checked( isset($_GET['search_target']) && $_GET['search_target'] === 'knowledge_only' ); ?>>
-            <?php _e( '知識カードのみ', 'my-knowledge-theme' ); ?>
+            <?php _e( 'ナレッジカードのみ', 'my-knowledge-theme' ); ?>
         </label>
     </div>
 

@@ -1,125 +1,133 @@
-<?php // PHPコードを開始するおまじない (ファイルの先頭にこれ以外の文字や空白は入れない)
-
+<?php
 /**
- * テーマの基本設定
+ * Cogitoire Knowledge Theme functions and definitions
+ *
+ * @link https://developer.wordpress.org/themes/basics/theme-functions/
+ *
+ * @package My_Knowledge_Theme
  */
-function my_theme_setup() {
-    // アイキャッチ画像を有効化
+
+// =========================================================================
+// 1. テーマ基本設定
+// =========================================================================
+function my_knowledge_theme_setup() {
+    // アイキャッチ画像の有効化
     add_theme_support( 'post-thumbnails' );
 
-    // ★★★ ナビゲーションメニューを登録 ★★★
+    // ナビゲーションメニューの登録
     register_nav_menus( array(
-        'primary' => __( 'ヘッダーメニュー', 'my-knowledge-theme' ), // メニュー位置のスラッグ => 管理画面での表示名
-        // 他にもメニュー位置が必要ならここに追加
+        'primary' => __( 'ヘッダーメニュー', 'my-knowledge-theme' ),
     ) );
 
-    // 他にテーマがサポートする機能があればここに追加
+    // HTML5のサポート (推奨)
+    add_theme_support( 'html5', array(
+        'search-form',
+        'comment-form',
+        'comment-list',
+        'gallery',
+        'caption',
+        'style',
+        'script',
+    ) );
+
+    // タイトルタグのサポート (必須)
+    add_theme_support( 'title-tag' );
+
+    // 自動フィードリンク (推奨)
+    add_theme_support( 'automatic-feed-links' );
+
+    // 翻訳ファイルの読み込み (必要なら)
+    // load_theme_textdomain( 'my-knowledge-theme', get_template_directory() . '/languages' );
 }
-add_action( 'after_setup_theme', 'my_theme_setup' );
+add_action( 'after_setup_theme', 'my_knowledge_theme_setup' );
 
-/**
- * テーマのスタイルシートとスクリプトを読み込む (エンキューする)
- */
-/**
- * テーマのスタイルシートとスクリプトを読み込む (エンキューする)
- */
-function my_theme_enqueue_scripts() { // ← この関数にまとめる
-
-    // style.css をエンキューする
+// =========================================================================
+// 2. スクリプト・スタイルの読み込み
+// =========================================================================
+function my_knowledge_theme_enqueue_scripts() {
+    // style.css (テーマのメインスタイルシート)
     wp_enqueue_style(
-        'my-theme-style',
+        'my-knowledge-theme-style',
         get_stylesheet_uri(),
         array(),
-        wp_get_theme()->get('Version')
+        wp_get_theme()->get('Version') // style.cssのバージョンを自動取得
     );
 
-    // random-background.js を読み込む
+    // random-background.js (背景用スクリプト)
     wp_enqueue_script(
         'my-knowledge-theme-random-background',
         get_template_directory_uri() . '/js/random-background.js',
-        array(),
-        '1.0',
-        true
+        array(), // 依存関係なし
+        '1.0',   // バージョン (必要に応じて変更)
+        true     // フッターで読み込む (true)
     );
 
-    // ★★★ サイドバーフィルター用のJavaScriptを読み込む処理をここに追加 ★★★
-    if ( is_post_type_archive('knowledge_card') || is_tax( get_object_taxonomies('knowledge_card') ) ) {
+    // knowledge-filter.js (ナレッジカード絞り込みフォーム用)
+    // ナレッジカードアーカイブページでのみ読み込む
+    if ( is_post_type_archive('knowledge_card') ) {
         wp_enqueue_script(
-            'my-knowledge-sidebar-filter', // ハンドル名
-            get_template_directory_uri() . '/js/sidebar-filter.js', // ファイルパス
+            'my-knowledge-filter',
+            get_template_directory_uri() . '/js/knowledge-filter.js',
             array('jquery'), // jQueryに依存
-            '1.0', // バージョン
-            true // フッターで読み込む
+            '1.0',           // バージョン
+            true             // フッターで読み込む
         );
     }
-    // ★★★ ここまで追加 ★★★
+    
 }
-// この関数を 'wp_enqueue_scripts' アクションにフックする
-add_action( 'wp_enqueue_scripts', 'my_theme_enqueue_scripts' );
+add_action( 'wp_enqueue_scripts', 'my_knowledge_theme_enqueue_scripts' );
 
+// =========================================================================
+// 3. カスタム投稿タイプ・タクソノミー登録
+// =========================================================================
+ function my_knowledge_theme_register_custom_types() {
 
-
-
-// ここから下に、他の関数や設定を追加していく
-
-// ... (カスタム投稿タイプなどのコードはそのまま) ...
-
-
-// ここから下に、他の関数や設定を追加していく
-
-
-/**
- * カスタム投稿タイプ「知識カード」とカスタムタクソノミー「分野」「タグ」を登録する
- */
-function my_theme_register_custom_types() {
-
-    // カスタム投稿タイプ「知識カード」の登録
+    // カスタム投稿タイプ「ナレッジカード」
     $labels_knowledge_card = array(
-        'name'                  => _x( '知識カード', 'Post type general name', 'my-knowledge-theme' ),
-        'singular_name'         => _x( '知識カード', 'Post type singular name', 'my-knowledge-theme' ),
-        'menu_name'             => _x( '知識カード', 'Admin Menu text', 'my-knowledge-theme' ),
-        'name_admin_bar'        => _x( '知識カード', 'Add New on Toolbar', 'my-knowledge-theme' ),
+        'name'                  => _x( 'ナレッジカード', 'Post type general name', 'my-knowledge-theme' ),
+        'singular_name'         => _x( 'ナレッジカード', 'Post type singular name', 'my-knowledge-theme' ),
+        'menu_name'             => _x( 'ナレッジカード', 'Admin Menu text', 'my-knowledge-theme' ),
+        'name_admin_bar'        => _x( 'ナレッジカード', 'Add New on Toolbar', 'my-knowledge-theme' ),
         'add_new'               => __( '新規追加', 'my-knowledge-theme' ),
-        'add_new_item'          => __( '新規知識カードを追加', 'my-knowledge-theme' ),
-        'new_item'              => __( '新規知識カード', 'my-knowledge-theme' ),
-        'edit_item'             => __( '知識カードを編集', 'my-knowledge-theme' ),
-        'view_item'             => __( '知識カードを表示', 'my-knowledge-theme' ),
-        'all_items'             => __( '知識カード一覧', 'my-knowledge-theme' ),
-        'search_items'          => __( '知識カードを検索', 'my-knowledge-theme' ),
-        'parent_item_colon'     => __( '親知識カード:', 'my-knowledge-theme' ),
-        'not_found'             => __( '知識カードが見つかりませんでした。', 'my-knowledge-theme' ),
-        'not_found_in_trash'    => __( 'ゴミ箱に知識カードが見つかりませんでした。', 'my-knowledge-theme' ),
+        'add_new_item'          => __( '新規ナレッジカードを追加', 'my-knowledge-theme' ),
+        'new_item'              => __( '新規ナレッジカード', 'my-knowledge-theme' ),
+        'edit_item'             => __( 'ナレッジカードを編集', 'my-knowledge-theme' ),
+        'view_item'             => __( 'ナレッジカードを表示', 'my-knowledge-theme' ),
+        'all_items'             => __( 'ナレッジカード一覧', 'my-knowledge-theme' ),
+        'search_items'          => __( 'ナレッジカードを検索', 'my-knowledge-theme' ),
+        'parent_item_colon'     => __( '親ナレッジカード:', 'my-knowledge-theme' ),
+        'not_found'             => __( 'ナレッジカードが見つかりませんでした。', 'my-knowledge-theme' ),
+        'not_found_in_trash'    => __( 'ゴミ箱にナレッジカードが見つかりませんでした。', 'my-knowledge-theme' ),
         'featured_image'        => _x( 'アイキャッチ画像', 'Overrides the “Featured Image” phrase for this post type. Added in 4.3', 'my-knowledge-theme' ),
         'set_featured_image'    => _x( 'アイキャッチ画像を設定', 'Overrides the “Set featured image” phrase for this post type. Added in 4.3', 'my-knowledge-theme' ),
         'remove_featured_image' => _x( 'アイキャッチ画像を削除', 'Overrides the “Remove featured image” phrase for this post type. Added in 4.3', 'my-knowledge-theme' ),
         'use_featured_image'    => _x( 'アイキャッチ画像として使用', 'Overrides the “Use as featured image” phrase for this post type. Added in 4.3', 'my-knowledge-theme' ),
-        'archives'              => _x( '知識カードアーカイブ', 'The post type archive label used in nav menus. Default “Post Archives”. Added in 4.4', 'my-knowledge-theme' ),
-        'insert_into_item'      => _x( '知識カードに挿入', 'Overrides the “Insert into post”/”Insert into page” phrase (used when inserting media into a post). Added in 4.4', 'my-knowledge-theme' ),
-        'uploaded_to_this_item' => _x( 'この知識カードへのアップロード', 'Overrides the “Uploaded to this post”/”Uploaded to this page” phrase (used when viewing media attached to a post). Added in 4.4', 'my-knowledge-theme' ),
-        'filter_items_list'     => _x( '知識カードリストを絞り込み', 'Screen reader text for the filter links heading on the post type listing screen. Default “Filter posts list”/”Filter pages list”. Added in 4.4', 'my-knowledge-theme' ),
-        'items_list_navigation' => _x( '知識カードリストナビゲーション', 'Screen reader text for the pagination heading on the post type listing screen. Default “Posts list navigation”/”Pages list navigation”. Added in 4.4', 'my-knowledge-theme' ),
-        'items_list'            => _x( '知識カードリスト', 'Screen reader text for the items list heading on the post type listing screen. Default “Posts list”/”Pages list”. Added in 4.4', 'my-knowledge-theme' ),
+        'archives'              => _x( 'ナレッジカードアーカイブ', 'The post type archive label used in nav menus. Default “Post Archives”. Added in 4.4', 'my-knowledge-theme' ),
+        'insert_into_item'      => _x( 'ナレッジカードに挿入', 'Overrides the “Insert into post”/”Insert into page” phrase (used when inserting media into a post). Added in 4.4', 'my-knowledge-theme' ),
+        'uploaded_to_this_item' => _x( 'このナレッジカードへのアップロード', 'Overrides the “Uploaded to this post”/”Uploaded to this page” phrase (used when viewing media attached to a post). Added in 4.4', 'my-knowledge-theme' ),
+        'filter_items_list'     => _x( 'ナレッジカードリストを絞り込み', 'Screen reader text for the filter links heading on the post type listing screen. Default “Filter posts list”/”Filter pages list”. Added in 4.4', 'my-knowledge-theme' ),
+        'items_list_navigation' => _x( 'ナレッジカードリストナビゲーション', 'Screen reader text for the pagination heading on the post type listing screen. Default “Posts list navigation”/”Pages list navigation”. Added in 4.4', 'my-knowledge-theme' ),
+        'items_list'            => _x( 'ナレッジカードリスト', 'Screen reader text for the items list heading on the post type listing screen. Default “Posts list”/”Pages list”. Added in 4.4', 'my-knowledge-theme' ),
     );
     $args_knowledge_card = array(
         'labels'             => $labels_knowledge_card,
-        'public'             => true, // サイト上で公開する
-        'has_archive'        => true, // アーカイブページ（一覧ページ）を持つ
+        'public'             => true,
+        'has_archive'        => true,
         'publicly_queryable' => true,
-        'show_ui'            => true, // 管理画面にUIを表示する
-        'show_in_menu'       => true, // 管理画面のメニューに表示する
+        'show_ui'            => true,
+        'show_in_menu'       => true,
         'query_var'          => true,
-        'rewrite'            => array( 'slug' => 'knowledge' ), // URLのスラッグ（例: http://localhost:8080/knowledge/カード名/）
+        'rewrite'            => array( 'slug' => 'knowledge' ), // アーカイブページのURLは /knowledge/
         'capability_type'    => 'post',
-        'hierarchical'       => false, // 階層構造を持たない（固定ページのような親子関係はなし）
-        'menu_position'      => 5, // 管理画面メニューの表示位置（5は「投稿」の下あたり）
-        'menu_icon'          => 'dashicons-book-alt', // 管理画面メニューのアイコン（Dashiconsから選択）
-        'supports'           => array( 'title', 'editor', 'thumbnail' ), // サポートする機能（タイトル、本文エディタ、アイキャッチ画像）
-        'show_in_rest'       => true, // ブロックエディタ（Gutenberg）に対応させる
+        'hierarchical'       => false,
+        'menu_position'      => 5,
+        'menu_icon'          => 'dashicons-book-alt',
+        'supports'           => array( 'title', 'editor', 'thumbnail', 'excerpt', 'custom-fields', 'revisions' ), // 抜粋、カスタムフィールド、リビジョンもサポート
+        'show_in_rest'       => true, // ブロックエディタ対応
     );
-    register_post_type( 'knowledge_card', $args_knowledge_card ); // 'knowledge_card' という名前で登録
-    
+    register_post_type( 'knowledge_card', $args_knowledge_card );
 
-    // カスタムタクソノミー「分野」（カテゴリー形式）の登録
+    // カスタムタクソノミー「分野」 (階層あり)
     $labels_field = array(
         'name'              => _x( '分野', 'taxonomy general name', 'my-knowledge-theme' ),
         'singular_name'     => _x( '分野', 'taxonomy singular name', 'my-knowledge-theme' ),
@@ -134,43 +142,42 @@ function my_theme_register_custom_types() {
         'menu_name'         => __( '分野', 'my-knowledge-theme' ),
     );
     $args_field = array(
-        'hierarchical'      => true, // 階層構造を持つ（カテゴリーのように親子関係を作れる）
+        'hierarchical'      => true, // 階層あり
         'labels'            => $labels_field,
         'show_ui'           => true,
-        'show_admin_column' => true, // 一覧画面にこのタクソノミーのカラムを表示する
+        'show_admin_column' => true,
         'query_var'         => true,
-        'rewrite'           => array( 'slug' => 'field' ), // URLのスラッグ (例: http://localhost:8080/field/分野名/)
-        'show_in_rest'      => true, // ブロックエディタ対応
+        'rewrite'           => array( 'slug' => 'field' ), // アーカイブURLは /field/分野名/
+        'show_in_rest'      => true,
     );
-    register_taxonomy( 'field', array( 'knowledge_card' ), $args_field ); // 'field' という名前で 'knowledge_card' に紐付けて登録
+    register_taxonomy( 'field', array( 'knowledge_card' ), $args_field );
 
-    // カスタムタクソノミー「分類」（階層あり）の登録
+    // カスタムタクソノミー「分類」 (階層あり)
     $labels_classification = array(
-        'name'              => _x( '分類', 'taxonomy general name', 'my-knowledge-theme' ), // 管理画面での表示名
+        'name'              => _x( '分類', 'taxonomy general name', 'my-knowledge-theme' ),
         'singular_name'     => _x( '分類', 'taxonomy singular name', 'my-knowledge-theme' ),
         'search_items'      => __( '分類を検索', 'my-knowledge-theme' ),
         'all_items'         => __( 'すべての分類', 'my-knowledge-theme' ),
-        'parent_item'       => __( '親分類', 'my-knowledge-theme' ), // 階層ありなので親を指定できる
+        'parent_item'       => __( '親分類', 'my-knowledge-theme' ),
         'parent_item_colon' => __( '親分類:', 'my-knowledge-theme' ),
         'edit_item'         => __( '分類を編集', 'my-knowledge-theme' ),
         'update_item'       => __( '分類を更新', 'my-knowledge-theme' ),
         'add_new_item'      => __( '新規分類を追加', 'my-knowledge-theme' ),
         'new_item_name'     => __( '新規分類名', 'my-knowledge-theme' ),
-        'menu_name'         => __( '分類', 'my-knowledge-theme' ), // メニュー名
+        'menu_name'         => __( '分類', 'my-knowledge-theme' ),
     );
     $args_classification = array(
-        'hierarchical'      => true, // ★★★ 階層構造を有効にする ★★★
+        'hierarchical'      => true, // 階層あり
         'labels'            => $labels_classification,
-        'show_ui'           => true, // 管理画面に表示
-        'show_admin_column' => true, // 知識カード一覧画面に「分類」カラムを表示（任意）
+        'show_ui'           => true,
+        'show_admin_column' => true,
         'query_var'         => true,
-        'rewrite'           => array( 'slug' => 'classification' ), // URLのスラッグ (例: /classification/産地/)
-        'show_in_rest'      => true, // ブロックエディタ対応
+        'rewrite'           => array( 'slug' => 'classification' ), // アーカイブURLは /classification/分類名/
+        'show_in_rest'      => true,
     );
-    // 'classification' という内部名で、'knowledge_card' 投稿タイプに紐付けて登録
-    register_taxonomy( 'classification', array( 'knowledge_card' ), $args_classification ); 
+    register_taxonomy( 'classification', array( 'knowledge_card' ), $args_classification );
 
-    // カスタムタクソノミー「知識タグ」（タグ形式）の登録
+    // カスタムタクソノミー「知識タグ」 (階層なし)
     $labels_knowledge_tag = array(
         'name'                       => _x( '知識タグ', 'taxonomy general name', 'my-knowledge-theme' ),
         'singular_name'              => _x( '知識タグ', 'taxonomy singular name', 'my-knowledge-theme' ),
@@ -188,135 +195,245 @@ function my_theme_register_custom_types() {
         'menu_name'                  => __( '知識タグ', 'my-knowledge-theme' ),
     );
     $args_knowledge_tag = array(
-        'hierarchical'          => false, // 階層構造を持たない（タグ形式）
+        'hierarchical'          => false, // 階層なし (タグ形式)
         'labels'                => $labels_knowledge_tag,
         'show_ui'               => true,
         'show_admin_column'     => true,
         'query_var'             => true,
-        'rewrite'               => array( 'slug' => 'knowledge-tag' ), // URLのスラッグ
-        'show_in_rest'          => true, // ブロックエディタ対応
+        'rewrite'               => array( 'slug' => 'knowledge-tag' ), // アーカイブURLは /knowledge-tag/タグ名/
+        'show_in_rest'          => true,
     );
-    register_taxonomy( 'knowledge_tag', array( 'knowledge_card' ), $args_knowledge_tag ); // 'knowledge_tag' という名前で 'knowledge_card' に紐付けて登録
-
-}
-// WordPress の初期化時（'init' アクション）に上記の関数を実行するようにフックする
-add_action( 'init', 'my_theme_register_custom_types' );
-/** 抜粋の長さを変更する（デフォルトは55ワード）
+    register_taxonomy( 'knowledge_tag', array( 'knowledge_card' ), $args_knowledge_tag );
+} 
+add_action( 'init', 'my_knowledge_theme_register_custom_types' );
+// =========================================================================
+// 4. 抜粋のカスタマイズ
+// =========================================================================
+/**
+ * 抜粋の文字数（ワード数）を変更
  */
-function my_theme_custom_excerpt_length( $length ) {
-    return 45; // ★ ここで抜粋のワード数を調整（例: 40ワード）
+function my_knowledge_theme_custom_excerpt_length( $length ) {
+    return 45; // 45ワードに設定 (お好みで調整)
 }
-add_filter( 'excerpt_length', 'my_theme_custom_excerpt_length', 999 );
+add_filter( 'excerpt_length', 'my_knowledge_theme_custom_excerpt_length', 999 );
 
 /**
- * 抜粋の末尾の文字を変更する（[...] を ... + 続きを読むリンクに）
+ * 抜粋の末尾に「続きを読む」リンクを追加
  */
-function my_theme_custom_excerpt_more( $more ) {
+function my_knowledge_theme_custom_excerpt_more( $more ) {
     global $post;
-    // return '...'; // 単に「...」だけ表示したい場合
-    return '... <a class="read-more" href="'. esc_url( get_permalink($post->ID) ) . '">' . __( '続きを読む &raquo;', 'my-knowledge-theme' ) . '</a>'; // 続きを読むリンク付き
+    // is_singular() で個別ページでは表示しないようにする
+    if ( is_singular() ) {
+        return '';
+    }
+    return '... <a class="read-more" href="'. esc_url( get_permalink($post->ID) ) . '">' . __( '続きを読む &raquo;', 'my-knowledge-theme' ) . '</a>';
 }
-add_filter( 'excerpt_more', 'my_theme_custom_excerpt_more' );
+add_filter( 'excerpt_more', 'my_knowledge_theme_custom_excerpt_more' );
 
+// =========================================================================
+// 5. アーカイブタイトルのカスタマイズ
+// =========================================================================
 /**
- * アーカイブページのタイトルから余計な文字（「アーカイブ:」など）を削除する
+ * アーカイブタイトルの接頭辞（「アーカイブ:」など）を削除
  */
 add_filter( 'get_the_archive_title_prefix', '__return_empty_string' );
 
-// もし、さらにタイトルをカスタマイズしたい場合 (例: 「知識カード一覧」と表示)
-
-function my_custom_archive_title( $title ) {
-    if ( is_post_type_archive( 'knowledge_card' ) ) { // 知識カードのアーカイブの場合
-        $title = '知識カード一覧'; // ★ 表示したいタイトルに変更
-    } elseif ( is_tax( 'field' ) ) { // 分野タクソノミーのアーカイブの場合
-        $title = single_term_title( '', false ) . ' の知識カード'; // 例:「建築 の知識カード」
-    } elseif ( is_tax( 'classification' ) ) { // 分類タクソノミーのアーカイブの場合
-        $title = single_term_title( '', false ) . ' の知識カード'; // 例:「ゴシック様式 の知識カード」
+/**
+ * ページタイプに応じてアーカイブタイトルをカスタマイズ
+ */
+function my_knowledge_theme_custom_archive_title( $title ) {
+    if ( is_post_type_archive( 'knowledge_card' ) ) {
+        $title = 'ナレッジカード一覧';
+    } elseif ( is_tax( array('field', 'classification', 'knowledge_tag') ) ) {
+        // タクソノミーアーカイブページでは「ターム名 のナレッジカード」と表示
+        $title = single_term_title( '', false ) . ' のナレッジカード';
+    } elseif ( is_search() ) {
+        // 検索結果ページ
+        $title = sprintf( esc_html__( '検索結果: %s', 'my-knowledge-theme' ), '<span>' . get_search_query() . '</span>' );
     }
-    // 他のアーカイブ（カテゴリー、タグ、日付など）のタイトルも必要に応じてここで変更可能
+    // 他のアーカイブ（カテゴリー、タグ、日付など）も必要ならここで調整
     return $title;
 }
-add_filter( 'get_the_archive_title', 'my_custom_archive_title' );
+add_filter( 'get_the_archive_title', 'my_knowledge_theme_custom_archive_title' );
 
+// =========================================================================
+// 6. 検索機能のカスタマイズ
+// =========================================================================
 /**
- * 検索クエリを変更して、カスタム投稿タイプを含めたり、対象を絞り込んだりする
+ * ヘッダー検索フォームの対象を切り替える
  */
 function my_knowledge_theme_search_filter( $query ) {
-    // 管理画面の検索やメインクエリでない場合は何もしない
+    // 管理画面やメインクエリでない場合は何もしない
     if ( is_admin() || ! $query->is_main_query() ) {
         return;
     }
 
-    // 検索ページのクエリの場合
+    // 検索結果ページのクエリの場合
     if ( $query->is_search() ) {
         // ラジオボタンの値を取得 (なければ 'all' とする)
         $search_target = isset( $_GET['search_target'] ) ? sanitize_text_field( $_GET['search_target'] ) : 'all';
 
         if ( $search_target === 'knowledge_only' ) {
-            // 「知識カードのみ」が選択された場合、投稿タイプを 'knowledge_card' に限定
+            // 「ナレッジカードのみ」が選択された場合
             $query->set( 'post_type', 'knowledge_card' );
         } else {
             // 「すべて」が選択された場合 (または指定がない場合)
-            // 検索対象に 'post' (投稿), 'page' (固定ページ), 'knowledge_card' (知識カード) を含める
+            // 検索対象に 'post' (投稿), 'page' (固定ページ), 'knowledge_card' (ナレッジカード) を含める
             $query->set( 'post_type', array( 'post', 'page', 'knowledge_card' ) );
         }
     }
 }
 add_action( 'pre_get_posts', 'my_knowledge_theme_search_filter' );
 
+// =========================================================================
+// 7. パンくずリスト生成
+// =========================================================================
 /**
- * パンくずリスト生成関数
+ * パンくずリストを生成して表示する関数
+ * テンプレートファイル内で <?php my_knowledge_theme_breadcrumbs(); ?> として呼び出す
  */
 function my_knowledge_theme_breadcrumbs() {
-    // トップページでは何も表示しない
+    // トップページでは表示しない
     if ( is_front_page() ) {
         return;
     }
 
-    // パンくずリストのHTMLを格納する変数
-    $breadcrumbs = '<nav class="breadcrumbs" aria-label="breadcrumb"><ol>'; // ol要素で開始
+    $breadcrumbs_items = array(); // パンくず要素を格納する配列
+    $separator   = '<span class="separator" aria-hidden="true"> &gt; </span>'; // 区切り文字
 
-    // ホームへのリンクは常に表示
-    $breadcrumbs .= '<li><a href="' . esc_url( home_url( '/' ) ) . '">' . esc_html__( 'ホーム', 'my-knowledge-theme' ) . '</a></li>';
-
-    // 区切り文字 (CSSで非表示にし、::before などで表示するのが一般的)
-    $separator = '<span class="separator" aria-hidden="true"> &gt; </span>'; // 例: >
+    // ホームへのリンク
+    $breadcrumbs_items[] = array(
+        'title' => esc_html__( 'ホーム', 'my-knowledge-theme' ),
+        'link'  => esc_url( home_url( '/' ) ),
+    );
 
     // --- 各ページタイプごとの処理 ---
 
-    // ブログ記事一覧ページ (ホームページ設定で固定ページ以外が選択されている場合)
+    // ブログ記事一覧ページ (is_home)
     if ( is_home() && ! is_front_page() ) {
         $post_page_id = get_option( 'page_for_posts' );
-        $breadcrumbs .= $separator . '<li>' . esc_html( get_the_title( $post_page_id ) ) . '</li>';
+        $breadcrumbs_items[] = array(
+            'title' => esc_html( get_the_title( $post_page_id ) ),
+            'link'  => '', // リンクなし
+        );
     }
-    // 知識カードのアーカイブページ
+    // ナレッジカードのアーカイブページ
     elseif ( is_post_type_archive( 'knowledge_card' ) ) {
-        $breadcrumbs .= $separator . '<li>' . esc_html( post_type_archive_title( '', false ) ) . '</li>';
+        $breadcrumbs_items[] = array(
+            'title' => esc_html( post_type_archive_title( '', false ) ),
+            'link'  => '', // リンクなし
+        );
     }
-    // カスタムタクソノミー (分野、分類、知識タグ) のアーカイブページ
+    // カスタムタクソノミー (分野, 分類, 知識タグ) のアーカイブ
     elseif ( is_tax( array( 'field', 'classification', 'knowledge_tag' ) ) ) {
         $term = get_queried_object();
         if ( $term ) {
-            // 親タームがあれば遡って表示 (階層があるタクソノミー用)
+            // ナレッジカードアーカイブへのリンクを追加
+            $post_type_obj = get_post_type_object( 'knowledge_card' );
+            if ( $post_type_obj && $post_type_obj->has_archive ) {
+                 $breadcrumbs_items[] = array(
+                    'title' => esc_html( $post_type_obj->labels->archives ),
+                    'link'  => esc_url( get_post_type_archive_link( 'knowledge_card' ) ),
+                 );
+            }
+
+            // 親タームがあれば遡って表示
             $ancestors = get_ancestors( $term->term_id, $term->taxonomy );
             $ancestors = array_reverse( $ancestors );
             foreach ( $ancestors as $ancestor_id ) {
                 $ancestor = get_term( $ancestor_id, $term->taxonomy );
                 if ( $ancestor && ! is_wp_error( $ancestor ) ) {
-                    $breadcrumbs .= $separator . '<li><a href="' . esc_url( get_term_link( $ancestor ) ) . '">' . esc_html( $ancestor->name ) . '</a></li>';
+                    $breadcrumbs_items[] = array(
+                        'title' => esc_html( $ancestor->name ),
+                        'link'  => esc_url( get_term_link( $ancestor ) ),
+                    );
                 }
             }
             // 現在のターム名 (リンクなし)
-            $breadcrumbs .= $separator . '<li>' . esc_html( $term->name ) . '</li>';
+            $breadcrumbs_items[] = array(
+                'title' => esc_html( $term->name ),
+                'link'  => '', // リンクなし
+            );
         }
     }
-    // 通常の投稿アーカイブ (カテゴリー、タグ、日付など)
-    elseif ( is_category() || is_tag() || is_date() || is_author() ) {
-         $breadcrumbs .= $separator . '<li>' . get_the_archive_title() . '</li>'; // アーカイブタイトル
+    // 通常のカテゴリーアーカイブ
+    elseif ( is_category() ) {
+        $cat = get_queried_object();
+        if ( $cat ) {
+            $ancestors = get_ancestors( $cat->term_id, 'category' );
+            $ancestors = array_reverse( $ancestors );
+            foreach ( $ancestors as $ancestor_id ) {
+                $ancestor = get_category( $ancestor_id );
+                if ( $ancestor && ! is_wp_error( $ancestor ) ) {
+                    $breadcrumbs_items[] = array(
+                        'title' => esc_html( $ancestor->name ),
+                        'link'  => esc_url( get_category_link( $ancestor->term_id ) ),
+                    );
+                }
+            }
+            $breadcrumbs_items[] = array(
+                'title' => esc_html( $cat->name ),
+                'link'  => '', // リンクなし
+            );
+        }
+    }
+    // 通常のタグアーカイブ
+    elseif ( is_tag() ) {
+        $tag = get_queried_object();
+        if ($tag) {
+            $breadcrumbs_items[] = array(
+                'title' => esc_html( $tag->name ),
+                'link'  => '', // リンクなし
+            );
+        }
+    }
+    // 日付アーカイブ
+    elseif ( is_date() ) {
+        if ( is_year() ) {
+            $breadcrumbs .= $separator . '<li>' . get_the_date( _x( 'Y年', 'yearly archives date format', 'my-knowledge-theme' ) ) . '</li>'; // 区切り文字 + li
+        } elseif ( is_month() ) {
+            $breadcrumbs_items[] = array(
+                'title' => get_the_date( _x( 'Y年', 'yearly archives date format', 'my-knowledge-theme' ) ),
+                'link'  => esc_url( get_year_link( get_the_date('Y') ) ),
+            );
+            $breadcrumbs_items[] = array(
+                'title' => get_the_date( _x( 'F', 'monthly archives date format', 'my-knowledge-theme' ) ),
+                'link'  => '',
+            );
+        } elseif ( is_day() ) {
+            $breadcrumbs_items[] = array(
+                'title' => get_the_date( _x( 'Y年', 'yearly archives date format', 'my-knowledge-theme' ) ),
+                'link'  => esc_url( get_year_link( get_the_date('Y') ) ),
+            );
+            $breadcrumbs_items[] = array(
+                'title' => get_the_date( _x( 'F', 'monthly archives date format', 'my-knowledge-theme' ) ),
+                'link'  => esc_url( get_month_link( get_the_date('Y'), get_the_date('m') ) ),
+            );
+            $breadcrumbs_items[] = array(
+                'title' => get_the_date( _x( 'j日', 'daily archives date format', 'my-knowledge-theme' ) ),
+                'link'  => '',
+            );
+        } else {
+             $breadcrumbs_items[] = array(
+                'title' => get_the_archive_title(),
+                'link'  => '',
+             );
+        }
+    }
+    // 投稿者アーカイブ
+    elseif ( is_author() ) {
+        $author = get_queried_object();
+        $breadcrumbs_items[] = array(
+            'title' => sprintf( esc_html__( '投稿者: %s', 'my-knowledge-theme' ), esc_html( $author->display_name ) ),
+            'link'  => '',
+        );
     }
     // 検索結果ページ
     elseif ( is_search() ) {
-        $breadcrumbs .= $separator . '<li>' . sprintf( esc_html__( '検索結果: %s', 'my-knowledge-theme' ), '<span>' . get_search_query() . '</span>' ) . '</li>';
+        $breadcrumbs_items[] = array(
+            'title' => sprintf( esc_html__( '検索結果: %s', 'my-knowledge-theme' ), '<span>' . get_search_query() . '</span>' ),
+            'link'  => '',
+        );
     }
     // 固定ページ
     elseif ( is_page() ) {
@@ -325,296 +442,248 @@ function my_knowledge_theme_breadcrumbs() {
             $ancestors = get_post_ancestors( $post->ID );
             $ancestors = array_reverse( $ancestors );
             foreach ( $ancestors as $ancestor_id ) {
-                $breadcrumbs .= $separator . '<li><a href="' . esc_url( get_permalink( $ancestor_id ) ) . '">' . esc_html( get_the_title( $ancestor_id ) ) . '</a></li>';
+                $breadcrumbs_items[] = array(
+                    'title' => esc_html( get_the_title( $ancestor_id ) ),
+                    'link'  => esc_url( get_permalink( $ancestor_id ) ),
+                );
             }
         }
-        // 現在のページ名 (リンクなし)
-        $breadcrumbs .= $separator . '<li>' . esc_html( get_the_title() ) . '</li>';
+        $breadcrumbs_items[] = array(
+            'title' => esc_html( get_the_title() ),
+            'link'  => '', // リンクなし
+        );
     }
-    // 個別投稿ページ (知識カード、ブログ記事など)
+    // 個別投稿ページ (ナレッジカード, ブログ記事など)
     elseif ( is_singular() ) {
         $post = get_queried_object();
         $post_type = get_post_type( $post );
 
-        // 知識カードの場合
+        // ナレッジカードの場合
         if ( $post_type === 'knowledge_card' ) {
-            // 知識カードアーカイブへのリンク
             $post_type_obj = get_post_type_object( $post_type );
             if ( $post_type_obj && $post_type_obj->has_archive ) {
-                $breadcrumbs .= $separator . '<li><a href="' . esc_url( get_post_type_archive_link( $post_type ) ) . '">' . esc_html( $post_type_obj->labels->archives ) . '</a></li>';
+                $breadcrumbs_items[] = array(
+                    'title' => esc_html( $post_type_obj->labels->archives ),
+                    'link'  => esc_url( get_post_type_archive_link( $post_type ) ),
+                );
             }
-            // ★★★ 分野や分類の階層を表示したい場合はここに追加 ★★★
-            // 例: 主な分野を取得してリンクを追加
+            // 主な分野の階層を表示 (最初の分野を取得)
             $fields = get_the_terms( $post->ID, 'field' );
             if ( ! empty( $fields ) && ! is_wp_error( $fields ) ) {
-                // 複数ある場合は最初のものを表示するなどのルール決めが必要
                 $primary_field = $fields[0];
-                // 親があれば表示
                 $field_ancestors = get_ancestors( $primary_field->term_id, 'field' );
                 $field_ancestors = array_reverse( $field_ancestors );
                 foreach ( $field_ancestors as $ancestor_id ) {
                      $ancestor = get_term( $ancestor_id, 'field' );
                      if ( $ancestor && ! is_wp_error( $ancestor ) ) {
-                         $breadcrumbs .= $separator . '<li><a href="' . esc_url( get_term_link( $ancestor ) ) . '">' . esc_html( $ancestor->name ) . '</a></li>';
+                         $breadcrumbs_items[] = array(
+                            'title' => esc_html( $ancestor->name ),
+                            'link'  => esc_url( get_term_link( $ancestor ) ),
+                         );
                      }
                 }
-                $breadcrumbs .= $separator . '<li><a href="' . esc_url( get_term_link( $primary_field ) ) . '">' . esc_html( $primary_field->name ) . '</a></li>';
+                $breadcrumbs_items[] = array(
+                    'title' => esc_html( $primary_field->name ),
+                    'link'  => esc_url( get_term_link( $primary_field ) ),
+                );
             }
-
         }
         // 通常の投稿 (ブログ記事) の場合
         elseif ( $post_type === 'post' ) {
-            // カテゴリーを取得して表示 (複数ある場合は最初のものを表示)
+            // ブログ記事一覧ページへのリンク (設定されていれば)
+            $post_page_id = get_option( 'page_for_posts' );
+            if ( $post_page_id && get_post_status ( $post_page_id ) == 'publish' ) {
+                 $breadcrumbs_items[] = array(
+                    'title' => esc_html( get_the_title( $post_page_id ) ),
+                    'link'  => esc_url( get_permalink( $post_page_id ) ),
+                 );
+            }
+            // 主なカテゴリーの階層を表示
             $categories = get_the_category( $post->ID );
             if ( ! empty( $categories ) ) {
                 $primary_category = $categories[0];
-                // 親カテゴリーがあれば表示
                 $cat_ancestors = get_ancestors( $primary_category->term_id, 'category' );
                 $cat_ancestors = array_reverse( $cat_ancestors );
                 foreach ( $cat_ancestors as $ancestor_id ) {
                      $ancestor = get_category( $ancestor_id );
                      if ( $ancestor && ! is_wp_error( $ancestor ) ) {
-                         $breadcrumbs .= $separator . '<li><a href="' . esc_url( get_category_link( $ancestor->term_id ) ) . '">' . esc_html( $ancestor->name ) . '</a></li>';
+                         $breadcrumbs_items[] = array(
+                            'title' => esc_html( $ancestor->name ),
+                            'link'  => esc_url( get_category_link( $ancestor->term_id ) ),
+                         );
                      }
                 }
-                $breadcrumbs .= $separator . '<li><a href="' . esc_url( get_category_link( $primary_category->term_id ) ) . '">' . esc_html( $primary_category->name ) . '</a></li>';
+                $breadcrumbs_items[] = array(
+                    'title' => esc_html( $primary_category->name ),
+                    'link'  => esc_url( get_category_link( $primary_category->term_id ) ),
+                );
             }
         }
-
         // 現在の投稿タイトル (リンクなし)
-        $breadcrumbs .= $separator . '<li>' . esc_html( get_the_title() ) . '</li>';
+        $breadcrumbs_items[] = array(
+            'title' => esc_html( get_the_title() ),
+            'link'  => '', // リンクなし
+        );
     }
     // 404ページ
     elseif ( is_404() ) {
-        $breadcrumbs .= $separator . '<li>' . esc_html__( '404 Not Found', 'my-knowledge-theme' ) . '</li>';
-    }
-
-    // --- 処理終了 ---
-
-    $breadcrumbs .= '</ol></nav>'; // ol要素を閉じる
-
-    // パンくずリストを出力
-    echo $breadcrumbs;
-}
-
-/**
- * フィルター用ウィジェットエリアを登録
- */
-function my_knowledge_theme_widgets_init() {
-    register_sidebar( array(
-        'name'          => __( '知識カードフィルター', 'my-knowledge-theme' ),
-        'id'            => 'knowledge-filter-area', // ← ★★★ ここの ID を確認 ★★★
-        'description'   => __( '知識カードアーカイブページに表示されるフィルターウィジェットを追加します。', 'my-knowledge-theme' ),
-        'before_widget' => '<section id="%1$s" class="widget %2$s filter-widget">', // ウィジェットのラッパー開始タグ
-        'after_widget'  => '</section>', // ウィジェットのラッパー終了タグ
-        'before_title'  => '<h2 class="widget-title">', // ウィジェットタイトルの開始タグ
-        'after_title'   => '</h2>', // ウィジェットタイトルの終了タグ
-    ) );
-}
-add_action( 'widgets_init', 'my_knowledge_theme_widgets_init' );
-/**
- * タクソノミーフィルターウィジェットクラス
- */
-class My_Knowledge_Taxonomy_Filter_Widget extends WP_Widget {
-
-    // ウィジェット設定
-    function __construct() {
-        parent::__construct(
-            'my_knowledge_taxonomy_filter_widget', // Base ID
-            __( '知識カード タクソノミーフィルター', 'my-knowledge-theme' ), // Name
-            array( 'description' => __( '指定したタクソノミーのタームをチェックボックスで表示し、知識カードを絞り込みます。', 'my-knowledge-theme' ), ) // Args
+        $breadcrumbs_items[] = array(
+            'title' => esc_html__( '404 Not Found', 'my-knowledge-theme' ),
+            'link'  => '', // リンクなし
         );
     }
 
-    // フロントエンド表示 (ウィジェットがサイドバーに表示される内容)
-    public function widget( $args, $instance ) {
-        $title = apply_filters( 'widget_title', empty( $instance['title'] ) ? '' : $instance['title'], $instance, $this->id_base );
-        $taxonomy = isset( $instance['taxonomy'] ) ? $instance['taxonomy'] : '';
-        // $relation はここでは使わない (クエリ変更は pre_get_posts で行うため)
+    // --- 配列からHTMLを生成 ---
+    $breadcrumbs_html = '<nav class="breadcrumbs-container" aria-label="breadcrumb"><ol class="breadcrumbs">';
+    $item_count = count( $breadcrumbs_items );
 
-        if ( empty( $taxonomy ) || ! taxonomy_exists( $taxonomy ) ) {
-            return; // タクソノミーが指定されていないか存在しない場合は何もしない
+    foreach ( $breadcrumbs_items as $i => $item ) {
+        $breadcrumbs_html .= '<li>';
+        if ( ! empty( $item['link'] ) ) {
+               $breadcrumbs_html .= '<a href="' . $item['link'] . '">' . $item['title'] . '</a>'; // ← 正しいリンク出力に修正
+        } else {
+            $breadcrumbs_html .= $item['title'];
         }
-
-        // フォームの開始 (現在のURLを取得し、既存のGETパラメータを維持しつつ送信)
-        $current_url = remove_query_arg( 'paged', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]" );
-
-        echo $args['before_widget']; // ウィジェット開始タグ
-        if ( ! empty( $title ) ) {
-            echo $args['before_title'] . esc_html( $title ) . $args['after_title']; // ウィジェットタイトル
+        // 最後の項目以外に区切り文字を追加
+        if ( $i < $item_count - 1 ) {
+            $breadcrumbs_html .= $separator;
         }
-
-        // タクソノミーのタームを取得
-        $terms = get_terms( array(
-            'taxonomy'   => $taxonomy,
-            'hide_empty' => true, // 投稿がないタームは非表示
-            'orderby'    => 'name', // 名前順で表示
-            'order'      => 'ASC',
-        ) );
-
-        // タームが存在する場合のみフォームとリストを表示
-        if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
-
-            // 現在選択されているタームIDを取得 (GETパラメータから)
-            $current_term_ids = isset( $_GET[ $taxonomy ] ) ? array_map( 'intval', (array) $_GET[ $taxonomy ] ) : array();
-
-            echo '<form class="taxonomy-filter-form" method="get" action="' . esc_url( $current_url ) . '">';
-
-            // --- 隠しフィールド ---
-            // ページネーションとこのウィジェットのタクソノミー以外のGETパラメータを維持
-            foreach ( $_GET as $key => $value ) {
-                if ( $key !== 'paged' && $key !== $taxonomy ) {
-                    if ( is_array( $value ) ) {
-                        foreach ( $value as $v ) {
-                            echo '<input type="hidden" name="' . esc_attr( $key ) . '[]" value="' . esc_attr( $v ) . '">';
-                        }
-                    } else {
-                        echo '<input type="hidden" name="' . esc_attr( $key ) . '" value="' . esc_attr( $value ) . '">';
-                    }
-                }
-            }
-            // --- 隠しフィールドここまで ---
-            // ★★★ ここから追加: リアルタイム検索ボックス ★★★
-            echo '<div class="filter-search-wrapper">'; // 検索ボックス用のラッパー
-            echo '<input type="text" class="filter-search-input" placeholder="' . esc_attr__( '項目を検索...', 'my-knowledge-theme' ) . '" aria-label="' . esc_attr__( 'フィルター項目を検索', 'my-knowledge-theme' ) . '" data-filter-target="#' . esc_attr($args['widget_id']) . ' .taxonomy-filter-list">';
-            echo '</div>';
-            // ★★★ ここまで追加 ★★★
- 
-            // リストに付与するクラスを決定
-            $list_class = 'taxonomy-filter-list'; // 基本クラス
-            if ( $taxonomy === 'field' ) {
-                $list_class .= ' no-toggle'; // ★ 分野 ('field') の場合に 'no-toggle' クラスを追加
-            }
-            echo '<ul class="' . esc_attr( $list_class ) . '">'; // クラスを出力してリスト開始
-
-                    // ★★★ ここから修正 ★★★
-            foreach ( $terms as $term ) {
-                $checked = in_array( $term->term_id, $current_term_ids ) ? ' checked' : '';
-                echo '<li>';
-                echo '<label>';
-                echo '<input type="checkbox" name="' . esc_attr( $taxonomy ) . '[]" value="' . esc_attr( $term->term_id ) . '"' . $checked . '>';
-                echo ' ' . esc_html( $term->name ) . ' (' . esc_html( $term->count ) . ')'; // ターム名と投稿数を表示
-                echo '</label>';
-                echo '</li>';
-            }
-            echo '</ul>'; // リスト終了
-
-            if ( $taxonomy !== 'field' ) {
-                // もっと見るボタン
-                echo '<button type="button" class="toggle-visibility-button" data-target-list="#' . esc_attr($args['widget_id']) . ' .taxonomy-filter-list">' . __('もっと見る', 'my-knowledge-theme') . '</button>';
-            }
-
-         // 絞り込みボタン
-            echo '<button type="submit" class="filter-submit-button">' . __( '絞り込む', 'my-knowledge-theme' ) . '</button>';
-            echo '</form>'; // フォーム終了
-
-        } else { // タームが見つからなかった場合
-            echo '<p>' . esc_html__( '利用可能なフィルター項目がありません。', 'my-knowledge-theme' ) . '</p>';
-        }
-
-        echo $args['after_widget']; // ウィジェット終了タグ
-    } // widget メソッドの閉じ括弧
-
-
-    // バックエンド (管理画面でのウィジェット設定フォーム)
-    public function form( $instance ) {
-        $title = ! empty( $instance['title'] ) ? $instance['title'] : '';
-        $taxonomy = ! empty( $instance['taxonomy'] ) ? $instance['taxonomy'] : '';
-        $relation = ! empty( $instance['relation'] ) ? $instance['relation'] : 'AND';
-
-        // 利用可能なタクソノミーを取得 (知識カードに紐づくもの)
-        $taxonomies = get_object_taxonomies( 'knowledge_card', 'objects' );
-        ?>
-        <p>
-            <label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"><?php esc_attr_e( 'タイトル:', 'my-knowledge-theme' ); ?></label>
-            <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>">
-        </p>
-        <p>
-            <label for="<?php echo esc_attr( $this->get_field_id( 'taxonomy' ) ); ?>"><?php esc_attr_e( '対象タクソノミー:', 'my-knowledge-theme' ); ?></label>
-            <select class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'taxonomy' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'taxonomy' ) ); ?>">
-                <option value=""><?php esc_html_e( '-- 選択してください --', 'my-knowledge-theme' ); ?></option>
-                <?php foreach ( $taxonomies as $tax ) : ?>
-                    <?php if ( $tax->public && $tax->show_ui ) : // 公開されていてUIを持つもののみ ?>
-                        <option value="<?php echo esc_attr( $tax->name ); ?>" <?php selected( $taxonomy, $tax->name ); ?>>
-                            <?php echo esc_html( $tax->label ); ?> (<?php echo esc_html( $tax->name ); ?>)
-                        </option>
-                    <?php endif; ?>
-                <?php endforeach; ?>
-            </select>
-        </p>
-         <p>
-            <label for="<?php echo esc_attr( $this->get_field_id( 'relation' ) ); ?>"><?php esc_attr_e( '複数選択時の条件:', 'my-knowledge-theme' ); ?></label>
-            <select class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'relation' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'relation' ) ); ?>">
-                <option value="AND" <?php selected( $relation, 'AND' ); ?>><?php esc_html_e( 'AND (すべて満たす)', 'my-knowledge-theme' ); ?></option>
-                <option value="OR" <?php selected( $relation, 'OR' ); ?>><?php esc_html_e( 'OR (いずれかを満たす)', 'my-knowledge-theme' ); ?></option>
-            </select>
-             <small><?php esc_html_e( '同じタクソノミー内で複数チェックした場合の条件です。', 'my-knowledge-theme' ); ?></small>
-        </p>
-        <?php
+        $breadcrumbs_html .= '</li>';
     }
 
-    // ウィジェット設定の更新
-    public function update( $new_instance, $old_instance ) {
-        $instance = array();
-        $instance['title'] = ( ! empty( $new_instance['title'] ) ) ? sanitize_text_field( $new_instance['title'] ) : '';
-        $instance['taxonomy'] = ( ! empty( $new_instance['taxonomy'] ) ) ? sanitize_text_field( $new_instance['taxonomy'] ) : '';
-        $instance['relation'] = ( isset( $new_instance['relation'] ) && $new_instance['relation'] === 'OR' ) ? 'OR' : 'AND';
-        return $instance;
-    }
+    $breadcrumbs_html .= '</ol></nav>'; // olとnavを閉じる
+
+    echo $breadcrumbs_html; // パンくずリストを出力
 }
 
-// ウィジェットを登録する関数
-function register_my_knowledge_filter_widget() {
-    register_widget( 'My_Knowledge_Taxonomy_Filter_Widget' );
-}
-add_action( 'widgets_init', 'register_my_knowledge_filter_widget' );
-
+// =========================================================================
+// 6.1. ナレッジカードアーカイブの絞り込み機能
+// =========================================================================
 /**
- * 知識カード一覧でタクソノミーフィルターを適用する
+ * ナレッジカードアーカイブページで、GETパラメータに基づいてタクソノミーで絞り込む
  */
-function my_knowledge_theme_filter_query( $query ) {
-    // 管理画面やメインクエリでない場合、または知識カード関連のアーカイブでない場合は何もしない
-    if ( is_admin() || ! $query->is_main_query() ||
-         ! ( $query->is_post_type_archive( 'knowledge_card' ) || $query->is_tax( get_object_taxonomies( 'knowledge_card' ) ) )
-       ) {
+function my_knowledge_theme_filter_knowledge_archive( $query ) {
+    // 管理画面、メインクエリでない、ナレッジカードアーカイブでない場合は何もしない
+    if ( is_admin() || ! $query->is_main_query() || ! $query->is_post_type_archive( 'knowledge_card' ) ) {
         return;
     }
 
-    // 既存の tax_query を取得 (あれば)
-    $tax_query = $query->get( 'tax_query' ) ?: array();
+    // tax_query を格納する配列を初期化
+    $tax_query = array();
+    // 複数のタクソノミー条件を AND で結びつける
+    $tax_query['relation'] = 'AND';
 
-    // フィルター対象のタクソノミーリスト
-    $filter_taxonomies = array( 'field', 'classification', 'knowledge_tag' );
+    // --- 各タクソノミーのGETパラメータをチェック ---
+    $taxonomies_operators = array(
+        'field'          => 'IN',  // 分野は OR 条件
+        'classification' => 'IN',  // 分類は OR 条件
+        'knowledge_tag'  => 'AND', // タグは AND 条件
+    );
 
-    // 各タクソノミーについてGETパラメータを確認
-    foreach ( $filter_taxonomies as $taxonomy ) {
-        if ( isset( $_GET[ $taxonomy ] ) && is_array( $_GET[ $taxonomy ] ) ) {
-            $term_ids = array_map( 'intval', $_GET[ $taxonomy ] );
-            if ( ! empty( $term_ids ) ) {
-                // ウィジェット設定から relation を取得 (デフォルトは AND)
-                // ※ 簡単のため、ここでは常に AND/OR を固定で指定するか、
-                //   ウィジェットごとに設定した relation を取得する仕組みが必要。
-                //   今回はシンプルに AND で実装します。OR にしたい場合は 'OR' に変更。
-                $relation = 'AND'; // または 'OR'
+    foreach ( $taxonomies_operators as $taxonomy => $operator ) {
+        // GETパラメータが存在し、空でない配列であることを確認
+        if ( isset( $_GET[ $taxonomy ] ) && is_array( $_GET[ $taxonomy ] ) && ! empty( $_GET[ $taxonomy ] ) ) {
+            // パラメータをサニタイズ (スラッグとして安全な文字のみ許可)
+            $selected_terms = array_map( 'sanitize_key', $_GET[ $taxonomy ] );
 
+            // 空の値をフィルタリング (万が一空のvalueが送られてきた場合)
+            $selected_terms = array_filter($selected_terms);
+
+            // フィルタリング後もタームが残っている場合のみ条件を追加
+            if (!empty($selected_terms)) {
+                // tax_query に条件を追加
                 $tax_query[] = array(
                     'taxonomy' => $taxonomy,
-                    'field'    => 'term_id',
-                    'terms'    => $term_ids,
-                    'operator' => $relation, // 同じタクソノミー内での条件 (AND: 全て含む, OR: いずれかを含む)
+                    'field'    => 'slug', // スラッグでタームを指定
+                    'terms'    => $selected_terms,
+                    'operator' => $operator, // 指定された演算子 (IN または AND) を使用
                 );
             }
         }
     }
 
-    // 複数のタクソノミー間での条件 (AND: すべてのタクソノミー条件を満たす)
+    // --- tax_query に条件が1つ以上追加された場合のみ、クエリにセット ---
+    // $tax_query['relation'] は常に存在するので、条件配列が1つ以上あるかチェック (count > 1)
     if ( count( $tax_query ) > 1 ) {
-        $tax_query['relation'] = 'AND';
-    }
-
-    // 変更した tax_query をセット
-    if ( ! empty( $tax_query ) ) {
         $query->set( 'tax_query', $tax_query );
     }
 }
-add_action( 'pre_get_posts', 'my_knowledge_theme_filter_query' );
+add_action( 'pre_get_posts', 'my_knowledge_theme_filter_knowledge_archive' );
+
+
+
+// =========================================================================
+// 8. 関連ナレッジカード表示関数 (single-knowledge_card.php で使用)
+// =========================================================================
+/**
+ * 関連するナレッジカードを表示する関数
+ *
+ * @param int    $post_id 現在の投稿ID
+ * @param string $taxonomy 関連付けに使うタクソノミーのスラッグ (デフォルト: 'knowledge_tag')
+ * @param int    $limit    表示する最大件数 (デフォルト: 5)
+ */
+function display_related_knowledge_cards( $post_id, $taxonomy = 'knowledge_tag', $limit = 5 ) {
+    // 現在の投稿に紐づくタームを取得
+    $terms = get_the_terms( $post_id, $taxonomy );
+
+    // タームがない場合は何もしない
+    if ( empty( $terms ) || is_wp_error( $terms ) ) {
+        return;
+    }
+
+    // タームIDのリストを作成
+    $term_ids = wp_list_pluck( $terms, 'term_id' );
+
+    // 関連投稿を取得するためのクエリ引数
+    $args = array(
+        'post_type'      => 'knowledge_card', // ナレッジカードのみ対象
+        'posts_per_page' => $limit,           // 表示件数
+        'post__not_in'   => array( $post_id ), // 現在の投稿は除外
+        'tax_query'      => array(
+            array(
+                'taxonomy' => $taxonomy,
+                'field'    => 'term_id',
+                'terms'    => $term_ids,
+                'operator' => 'IN', // いずれかのタームに合致すればOK
+            ),
+        ),
+        'orderby'        => 'rand', // ランダム表示 (関連度順にしたい場合は変更)
+    );
+var_dump($args);
+// または、デバッグログに出力する場合
+// error_log(print_r($args, true));
+
+$related_query = new WP_Query( $args );
+
+    // 関連投稿が見つかった場合
+    if ( $related_query->have_posts() ) :
+        ?>
+        <div class="related-knowledge-cards">
+            <h3 class="related-title"><?php printf( esc_html__( '関連する%s', 'my-knowledge-theme' ), $related_query->query_vars['post_type'] === 'knowledge_card' ? 'ナレッジカード' : '記事' ); ?></h3>
+            <ul>
+                <?php while ( $related_query->have_posts() ) : $related_query->the_post(); ?>
+                    <li>
+                        <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+                        <?php
+                        // オプション: 共通するタグを表示
+                        $common_terms = get_the_terms( get_the_ID(), $taxonomy );
+                        if ( ! empty( $common_terms ) && ! is_wp_error( $common_terms ) ) {
+                            $common_term_names = array();
+                            foreach ( $common_terms as $common_term ) {
+                                if ( in_array( $common_term->term_id, $term_ids ) ) {
+                                    $common_term_names[] = '<a href="' . esc_url( get_term_link( $common_term ) ) . '">' . esc_html( $common_term->name ) . '</a>';
+                                }
+                            }
+                            if ( ! empty( $common_term_names ) ) {
+                                echo ' <span class="common-tags">(' . implode( ', ', $common_term_names ) . ')</span>';
+                            }
+                        }
+                        ?>
+                    </li>
+                <?php endwhile; ?>
+            </ul>
+        </div>
+        <?php
+        wp_reset_postdata(); // クエリをリセット
+    endif; // $related_query->have_posts()
+}

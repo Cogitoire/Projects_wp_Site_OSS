@@ -39,7 +39,7 @@ body {
 }
 
 
-/* --- 知識カード詳細 (`single-knowledge_card.php`) --- */
+/* --- ナレッジカード詳細 (`single-knowledge_card.php`) --- */
 
 /* 2カラムコンテナ */
 .knowledge-card-container {
@@ -71,7 +71,7 @@ body {
     background-color: #EEE;
 }
 
-/* 知識カード: タイトル */
+/* ナレッジカード: タイトル */
 .knowledge-card-single .entry-title {
     font-size: 28px;
     margin-top: 0;
@@ -80,7 +80,7 @@ body {
     color: #222; /* やや濃いめの文字色 */
 }
 
-/* 知識カード: 分野 */
+/* ナレッジカード: 分野 */
 .knowledge-card-main-content .entry-meta .field-links {
     display: inline-block; 
     font-size: 16px; /* タイトルより少し小さく */
@@ -127,7 +127,7 @@ body {
 }
 
 
-/* 知識カード: 本文 */
+/* ナレッジカード: 本文 */
 .knowledge-card-main-content .entry-content {
     margin-top: 20px; /* 分野との間隔を少し広げる */
     font-size: 16px; /* 基本の文字サイズ */
@@ -144,7 +144,7 @@ body {
 }
 
 
-/* 知識カード: タグ */
+/* ナレッジカード: タグ */
 .knowledge-card-main-content .entry-footer .knowledge-tag-links {
     display: block; 
     margin-top: 25px; 
@@ -236,15 +236,22 @@ body {
 
 /* 全体の幅を制限する場合 (必要ならコメントアウトを外す) */
 
-.content-area {
-    max-width: 800px; /* 例えば最大幅を800pxに設定 */
-    margin-left: auto;  /* 左の余白を自動調整 */
-    margin-right: auto; /* 右の余白を自動調整 */
-    padding: 20px;      /* 内側の余白（コンテンツと枠線の間） */
-    background-color: #f0f0f0; /* ★★★ この行を追加: コンテンツエリアの背景を白にする ★★★ */
-    /* ↓↓ オプション: コンテンツエリアをカードのように見せたい場合 ↓↓ */
+/* ページ全体のコンテナ (header.php/footer.phpで追加した #content) */
+#content.site-content {
+    max-width: 1100px; /* サイト全体の最大幅 (サイドバー込みで調整) */
+    margin-left: auto;
+    margin-right: auto;
+    padding: 20px; /* 左右の余白 */
+    background-color: rgba(222, 222, 222, 0.7); /* ★ 80%不透明のグレー */ /* コンテンツエリアの背景色 */
     border-radius: 10px; /* 角を少し丸める (任意) */
-    
+}
+
+.content-area {
+    /* max-width と margin は #content.site-content に移動 */
+    /* padding と background-color は必要に応じて残すか #content に統合 */
+    /* padding: 20px; */ /* ← #content に padding があるので不要かも */
+    /* background-color: #f0f0f0; */ /* ← #content に設定済み */
+    /* border-radius: 10px; */ /* ← #content に設定済み */
 }
 
 
@@ -366,7 +373,7 @@ body {
     display: inline-block;
     padding: 5px 12px;
     margin: 0 2px;
-    border: 1px solid #ddd;
+    border: 1px solid #7a7a7a;
     color: #005f99;
     text-decoration: none;
     border-radius: 3px;
@@ -406,6 +413,7 @@ body {
     text-decoration: none; /* 下線を消す */
     color: #005f99; /* 以前設定したリンク色 */
     font-weight: bold;
+    font-size: 23px; /* ★ メニューの文字サイズを指定 (例: 18px) */
     border-bottom: 2px solid transparent; /* ホバー用の下準備 */
     transition: border-bottom 0.2s; /* ホバー効果を滑らかに */
 }
@@ -453,7 +461,7 @@ nav:empty { display: none; }
 .related-knowledge-cards {
     margin-top: 40px; /* 上のコンテンツとの間隔 */
     padding-top: 20px; /* 上の区切り線との間隔 */
-    border-top: 1px solid #eee; /* 上に区切り線 */
+    border-top: 1px solid #7a7a7a; /* 上に区切り線 */
     clear: both; /* 回り込み解除 (念のため) */
 }
 
@@ -536,7 +544,7 @@ nav:empty { display: none; }
     white-space: nowrap; /* 折り返さないように */
 }
 
-/* ラジオボタンのラベル (「すべて」「知識カードのみ」) */
+/* ラジオボタンのラベル (「すべて」「ナレッジカードのみ」) */
 .header-search .search-target-options label {
     font-size: 14px; /* ★「検索対象:」ラベルと同じか、少し小さめに調整 */
     margin: 0; /* 余計なマージンをリセット */
@@ -583,278 +591,222 @@ nav:empty { display: none; }
 # Breadcrumbs Styles
 --------------------------------------------------------------*/
 .breadcrumbs-container {
-    max-width: 1100px; /* ★ ラッパーと同じ最大幅にする (例) */
-    margin: 15px auto; /* 上下余白と中央揃え */
-    padding: 0 20px;   /* 左右パディング */
+    /* ... 省略 ... */
     font-size: 0.9em;
     color: #666;
+    margin-bottom: 20px; /* メインコンテンツとの間に適切な余白 */
 }
 
+/* style.css 内 */
 .breadcrumbs ol {
     list-style: none;
     margin: 0;
     padding: 0;
-    display: flex; /* 横並びにする */
-    flex-wrap: wrap; /* 折り返しを許可 */
+    display: flex; /* ← このルールは一旦そのまま or 削除してもOK */
+    flex-wrap: wrap; /* 折り返しは許可 (必要なら nowrap) */
+    align-items: center;
+    /* overflow-x: auto; */ /* ← 一旦コメントアウト */
+    /* white-space: nowrap; */ /* ← 一旦コメントアウト */
 }
 
-.breadcrumbs li {
+/* ↓↓↓ セレクタをより具体的にして !important を試す ↓↓↓ */
+.breadcrumbs-container ol.breadcrumbs { /* 親要素を含めて具体的に指定 */
+    list-style: none !important; /* ★★★ 数字を強制的に消す ★★★ */
+    display: flex !important;    /* ★★★ 横並びを強制する ★★★ */
     margin: 0;
     padding: 0;
-    display: flex; /* 区切り文字をli内に含める場合 */
-    align-items: center;
+    flex-wrap: wrap; /* 上のルールから移動 */
+    align-items: center; /* 上のルールから移動 */
 }
+
+/* li のセレクタも具体的に */
+.breadcrumbs-container ol.breadcrumbs li {
+    margin: 0;
+    padding: 0;
+}
+/* ↑↑↑ ここまで修正 ↑↑↑ */
 
 /* 区切り文字のスタイル */
 .breadcrumbs .separator {
     margin: 0 0.5em; /* 左右に余白 */
     color: #999;
+    /* ★ display指定は不要 (liがflexなので) */
 }
 
 /* 最初の要素の前の区切り文字は不要 */
-.breadcrumbs li:first-child .separator {
-    display: none;
-}
+/* .breadcrumbs li:first-child .separator { display: none; } */ /* ← これは不要かも */
 
 .breadcrumbs a {
-    color: #005f99; /* リンク色 (テーマに合わせて調整) */
+    color: #005f99;
     text-decoration: none;
+    /* ★ display: inline-block; などは不要 */
 }
 
 .breadcrumbs a:hover {
     text-decoration: underline;
 }
 
+
 /* 現在のページ (最後のli) はリンクなし */
 .breadcrumbs li:last-child {
-    font-weight: bold; /* 少し強調 (任意) */
+    font-weight: bold;
     color: #333;
+    /* ★ white-space: normal; /* 長い場合に折り返すように (必要なら) */
 }
-.breadcrumbs li:last-child a { /* 最後の要素に誤ってリンクが付かないように念のため */
+.breadcrumbs li:last-child a {
     pointer-events: none;
     color: inherit;
 }
 
-/*--------------------------------------------------------------
-# Sidebar & Filter Styles
---------------------------------------------------------------*/
-
-/*--------------------------------------------------------------
-# Main Content Wrapper (for sidebar layout)
---------------------------------------------------------------*/
 
 
-/* --- レイアウト設定 --- */
-
-/*--------------------------------------------------------------
-# Main Content Wrapper & Sidebar Layout (Flexbox)
---------------------------------------------------------------*/
-
-/* --- サイドバー "なし" のページのコンテンツエリア --- */
-/* .content-area セレクタを :not() で明確化 */
-.content-area:not(.with-sidebar) {
-    max-width: 800px; /* サイドバーなし時の最大幅 */
-    margin: 0 auto 40px auto; /* 中央寄せ */
-    padding: 20px;
-    /* background-color: #f0f0f0; */ /* ← 元の指定をコメントアウト */
-    background-color: rgba(240, 240, 240, 0.8); /* ★ 80%不透明の薄いグレー */
-    border-radius: 10px;
+/* 絞り込みフォーム全体 */
+.knowledge-card-filter-form {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 20px;
+    background-color: rgba(222, 222, 222, 0.8); /* ★ 80%不透明のグレー */
 }
 
-/* --- サイドバー "あり" のページのレイアウトラッパー (Flexbox) --- */
-.content-wrapper-flex {
-    display: flex;
-    gap: 10px; /* メインとサイドバーの隙間 */
-    /* max-width: 11px; */ /* ← ★★★ ここが原因です！ ★★★ */
-    max-width: 1100px; /* ★★★ 正しい値 (例: 1100px) に修正 ★★★ */
-    margin: 0 auto 40px auto; /* ★ 上下マージンと左右autoで中央寄せ */
-    /* padding: 0 20px; */ /* 必要ならラッパー自体に左右パディング */
+.knowledge-card-filter-form h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #7a7a7a;
+    padding-bottom: 10px;
 }
 
-/* サイドバーを持つページのメインコンテンツエリア (Flexアイテム) */
-.content-area.with-sidebar {
-    flex: 3; /* 幅の比率 (例: サイドバーの3倍) */
-    min-width: 0; /* 縮小できるように */
-    /* width, float, margin-right は削除 */
-    padding: 20px; /* パディングは維持 */
-    /* background-color: #F0F0F0; */ /* ← 元の指定をコメントアウト */
-    background-color: rgba(240, 240, 240, 0.8); /* ★ 80%不透明の薄いグレー */
-    border-radius: 10px; /* 角丸も維持 */
+/* 各フィルターグループ (fieldset) */
+.filter-group {
+    border: none; /* デフォルトの枠線を消す */
+    padding: 0;
+    margin: 0 0 15px 0;
 }
 
-/* 知識カードフィルター用サイドバー (Flexアイテム) */
-.knowledge-filter-sidebar {
-    flex: 1; /* 幅の比率 (例: メインの1/3) */
-    min-width: 200px; /* サイドバーが潰れない最小幅 (任意) */
-    /* width, float は削除 */
-    /* サイドバー内のウィジェットスタイル (.filter-widget など) はそのまま */
+/* 折りたたみ可能なグループの凡例 (legend) */
+.filter-collapsible .filter-legend-toggle {
+    cursor: pointer;
+    position: relative;
+    padding-right: 20px; /* 矢印用のスペース */
+    font-weight: bold;
+    margin-bottom: 5px; /* legendとコントロール間のスペース */
+    display: inline-block; /* 矢印の位置調整のため */
 }
 
-
-
-/* --- フィルターウィジェット共通スタイル --- */
-.filter-widget {
-    margin-bottom: 30px; /* ウィジェット間の下の余白 */
-    padding: 15px;       /* ウィジェット内の余白 */  
-    /* background-color: #F0F0F0; */ /* ← 元の指定をコメントアウト (taxonomy-filter-list の定義にあった場合) */
-    background-color: rgba(240, 240, 240, 0.8); /* ★ 80%不透明の薄いグレー */
-    border: 1px solid #eee;    /* ウィジェットの枠線 */
-    border-radius: 5px;      /* ウィジェットの角を少し丸める */
+/* 矢印 (疑似要素で作成) */
+.filter-collapsible .filter-legend-toggle::after {
+    content: '▼'; /* 閉じた状態の矢印 */
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.8em;
+    color: #666;
+    transition: transform 0.2s ease-in-out;
 }
 
-/* フィルターウィジェットのタイトル */
-.filter-widget .filter-title {
-    font-size: 18px;      /* タイトルの文字サイズ */
-    margin-top: 0;        /* タイトルの上の余白をなくす */
-    margin-bottom: 15px;  /* タイトルとリストの間の余白 */
-    padding-bottom: 10px; /* タイトルの下に少し余白 */
-    border-bottom: 1px solid #eee; /* タイトルの下に区切り線 */
-    font-weight: 600;     /* 少し太字に */
-    color: #333;
-    
+/* 開いた状態の矢印 */
+.filter-collapsible.is-open .filter-legend-toggle::after {
+    transform: translateY(-50%) rotate(180deg); /* 上向きに回転 */
+    content: '▲'; /* 開いた状態の矢印 */
 }
 
-/* --- チェックボックスリストのスタイル --- */
-.taxonomy-filter-list {
-    list-style: none;     /* リストの・を消す */
-    margin: 0 0 15px 0; /* 下に余白、左のインデントをなくす */
-    padding: 0;           /* 内側の余白をなくす */
-    max-height: 200px;    /* リストが高くなりすぎないように最大高さを設定 */
-    overflow-y: auto;     /* 高さを超えたら縦スクロールバーを表示 */
-    border: 1px solid #eee; /* リスト全体を囲む枠線 */
-    padding: 10px;        /* リストの内側の余白 */
-    /* background-color: #F0F0F0; */ /* ← 元の指定をコメントアウト (taxonomy-filter-list の定義にあった場合) */
-    background-color: rgba(240, 240, 240, 0.9); /* ★ 90%不透明の薄いグレー */
+/* 検索フィールドとオプションのコンテナ */
+.filter-controls {
+    padding-left: 10px; /* 少しインデント */
+    border-left: 2px solid #7a7a7a; /* 左側に線 */
+    margin-left: 5px; /* legendとの間に少しスペース */
 }
 
-.taxonomy-filter-list li {
-    margin-bottom: 8px; /* 各チェックボックス項目の下の余白 */
-}
-.taxonomy-filter-list li:last-child {
-    margin-bottom: 0; /* 最後の項目だけ下の余白をなくす */
-}
-
-.taxonomy-filter-list label {
-    display: block;     /* ラベル全体をクリック可能にする */
-    font-size: 14px;    /* 文字サイズ */
-    cursor: pointer;    /* マウスカーソルを指マークに */
-    line-height: 1.4;   /* 行の高さを調整 */
-}
-.taxonomy-filter-list input[type="checkbox"] {
-    margin-right: 5px;      /* チェックボックスと文字の間の隙間 */
-    vertical-align: middle; /* チェックボックスと文字の高さを中央揃えに */
-}
-
-/* --- 絞り込みボタンのスタイル --- */
-.filter-submit-button {
-    display: block;     /* ボタンをブロック要素にして幅いっぱいに広げる */
-    width: 100%;        /* 幅を100%に */
-    padding: 10px;      /* ボタンの内側の余白 */
-    font-size: 14px;    /* 文字サイズ */
-    background-color: #0073aa; /* ボタンの背景色 (WordPress標準ブルー) */
-    color: #fff;        /* 文字色を白に */
-    border: none;       /* 枠線をなくす */
-    border-radius: 4px; /* ボタンの角を少し丸める */
-    cursor: pointer;    /* マウスカーソルを指マークに */
-    text-align: center; /* 文字を中央揃えに */
-    transition: background-color 0.2s; /* ホバー時の色変化を滑らかに */
-}
-.filter-submit-button:hover {
-    background-color: #005f99; /* ホバー時の背景色を少し濃く */
-}
-
-/* --- レスポンシブ対応 (Flexbox版) --- */
-@media (max-width: 767px) {
-    .breadcrumbs-container {
-        max-width: 100%; /* スマホでは最大幅解除 */
-        padding: 0 15px;
-        margin-top: 10px;
-        margin-bottom: 20px;
-    }
-    .content-wrapper-flex {
-        flex-direction: column; /* 縦並びにする */
-        gap: 30px; /* 縦並び時の隙間 */
-        max-width: 100%; /* スマホでは最大幅を解除 */
-        padding: 0 15px; /* スマホ用に左右パディング */
-        margin-bottom: 30px;
-    }
-    .content-area.with-sidebar,
-    .knowledge-filter-sidebar {
-         flex: none; /* 比率指定を解除 */
-         width: 100%; /* 幅を100%に戻す */
-         min-width: 0;
-         margin-bottom: 0; /* gapがあるので不要 */
-    }
-    /* サイドバーがないページのコンテンツエリアも調整 */
-    .content-area:not(.with-sidebar) {
-        max-width: 100%;
-        padding: 15px;
-        margin-bottom: 30px;
-    }
-}
-
-/* --- サイドバーフィルターリストの高さ制限 --- */
-.widget_my_knowledge_taxonomy_filter_widget .taxonomy-filter-list { /* ウィジェット全体を特定し、その中のリストに適用 */
-    max-height: 150px; /* ★ 初期表示の最大高さ (例: 150px) - お好みで調整 */
-    overflow-y: hidden;  /*★ 高さを超えた部分を隠す (スクロールバーは出さない) */
-    transition: max-height 0.3s ease-out; /* 高さが変わる時にアニメーション */
-    border: 1px solid #eee; /* 範囲を分かりやすくするため一時的に枠線 (任意) */
-    padding: 10px; /* 内側に少し余白 (任意) */
-    list-style: none; /* リストマーカーを消す (任意) */
-    margin: 0; /* デフォルトのマージンをリセット (任意) */
-}
-  
-  /* 「もっと見る」が押された時用のクラス */
-  .widget_my_knowledge_taxonomy_filter_widget .taxonomy-filter-list.show-all {
-    max-height: 1000px; /* ★ 十分な高さを指定して全て表示できるようにする */
-    overflow-y: auto; /* ★ 必要であればスクロールバーを表示 */
-  }
-
-  /* 分野ウィジェットのリストは高さ制限とoverflowを解除 */
-.widget_my_knowledge_taxonomy_filter_widget .taxonomy-filter-list.no-toggle {
-    max-height: none; /* 高さ制限を解除 */
-    overflow-y: visible; /* overflow をデフォルトに戻す (hidden を解除) */
-    border: none; /* 一時的に付けていた枠線も解除 (不要なら削除) */
-    /* padding: 0; */ /* 必要ならパディングも調整 */
-    /* transition: none; */ /* アニメーションも不要なら解除 */
-}
-
-  /* --- もっと見る/閉じるボタン --- */
-.toggle-visibility-button {
-    display: block; /* ボタンをブロック要素に */
-    width: auto; /* 幅は自動調整 */
-    margin: 10px auto 0 auto; /* 上に余白、左右中央寄せ */
-    padding: 5px 12px; /* 内側の余白 */
-    font-size: 13px; /* 文字サイズ */
-    color: #005f99; /* 文字色 */
-    background-color: transparent; /* 背景は透明 */
-    border: 1px solid #005f99; /* 枠線 */
-    border-radius: 4px; /* 角を丸める */
-    cursor: pointer; /* カーソルを指マークに */
-    transition: all 0.2s; /* ホバー効果を滑らかに */
-}
-
-.toggle-visibility-button:hover {
-    background-color: #f0f5fa; /* ホバー時の背景色 */
-    color: #003f66; /* ホバー時の文字色 */
-    border-color: #003f66; /* ホバー時の枠線色 */
-}
-
-/* JavaScriptで非表示にされたボタン */
-.toggle-visibility-button:hidden {
-    display: none;
-}
-
-/* --- フィルター内検索ボックス --- */
-.filter-search-wrapper {
-    margin-bottom: 10px; /* 検索ボックスとリストの間の余白 */
-}
-
+/* 検索入力フィールド */
 .filter-search-input {
-    width: 100%; /* 幅を親要素に合わせる */
-    padding: 8px 10px; /* 内側の余白 */
-    font-size: 13px; /* 文字サイズ */
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box; /* paddingとborderをwidthに含める */
+    width: calc(100% - 10px); /* 少し幅を調整 */
+    padding: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #7a7a7a;
+    box-sizing: border-box;
+}
+
+/* オプション（チェックボックス）のラッパー */
+.filter-options {
+    max-height: 200px; /* 高すぎると見づらいので最大高さを設定 */
+    overflow-y: auto; /* 項目が多い場合にスクロールバーを表示 */
+    padding: 5px;
+    border-top: 1px solid #7a7a7a; /* 検索フィールドとの区切り線 */
+    margin-top: 10px;
+}
+
+/* チェックボックスのラベル */
+.filter-options label {
+    display: block; /* 各ラベルを改行して表示 */
+    margin-bottom: 5px;
+    cursor: pointer;
+}
+.filter-options label:hover {
+    background-color: #f0f0f0;
+}
+
+/* 絞り込みボタンとリセットボタン */
+.filter-actions {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #7a7a7a;
+    display: flex; /* 横並びにする */
+    gap: 10px; /* ボタン間のスペース */
+}
+
+.filter-actions button,
+.filter-actions .filter-reset {
+    padding: 8px 15px;
+    cursor: pointer;
+}
+
+.filter-actions .filter-reset {
+    text-decoration: none;
+    border: 1px solid #7a7a7a;
+    background-color: #fff;
+    color: #333;
+    line-height: normal; /* ボタンと高さを合わせる */
+}
+.filter-actions .filter-reset:hover {
+    background-color: #333; /* ★ 80%不透明のグレー */
+}
+
+/* 件数表示 */
+.knowledge-card-count {
+    margin-bottom: 15px;
+    font-weight: bold;
+    color: #555;
+}
+
+
+/* ==========================================================================
+   サイドバーレイアウト (Flexbox)
+   ========================================================================== */
+
+   .content-wrapper-flex {
+    display: flex;
+    gap: 30px; /* メインとサイドバーの間の隙間 */
+}
+
+/* メインコンテンツエリア (サイドバーありの場合) */
+.content-area.with-sidebar {
+    flex: 1; /* 残りのスペースをすべて使う */
+    min-width: 0; /* Flexアイテムが縮小できるように */
+}
+
+/* 絞り込み用サイドバー */
+.knowledge-filter-sidebar {
+    width: 280px; /* サイドバーの幅を指定 */
+    flex-shrink: 0; /* サイドバーが縮まないように */
+    border-left: 7px solid #7a7a7a; /* ← 左側に境界線を追加 */
+    padding-left: 30px; /* ← 境界線とサイドバーの中身の間に隙間を追加 */
+}
+
+/* サイドバー内のフォーム */
+.knowledge-filter-sidebar .knowledge-card-filter-form {
+    /* サイドバー内のフォームに特化したスタイルが必要な場合はここに追加 */
+    margin-bottom: 0; /* サイドバー内では下のマージン不要かも */
+    border: none; /* サイドバー自体に枠線があれば不要かも */
+    background-color: transparent; /* サイドバーの背景色に合わせる */
+    padding: 0; /* サイドバー自体にパディングがあれば不要かも */
 }
